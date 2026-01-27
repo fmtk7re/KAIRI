@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RIVER Futures Monitor</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0d1117; color: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', monospace; padding: 16px; }
+h1 { font-size: 1.2em; margin-bottom: 4px; }
+.status { font-size: 0.85em; color: #8b949e; margin-bottom: 16px; }
+.charts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.chart-box { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 12px; }
+.chart-box h2 { font-size: 0.9em; margin-bottom: 8px; color: #58a6ff; }
+canvas { width: 100% !important; }
+.latest { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 12px; }
+.card h3 { font-size: 0.8em; color: #8b949e; margin-bottom: 6px; }
+.card .val { font-size: 1.3em; font-weight: bold; }
+.pos { color: #3fb950; }
+.neg { color: #f85149; }
+@media (max-width: 900px) {
+  .charts { grid-template-columns: 1fr; }
+  .latest { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<h1>RIVER Perpetual Futures Monitor</h1>
+<div class="status" id="status">Loading...</div>
+
+<div class="latest" id="latest"></div>
+<div class="charts">
+  <div class="chart-box"><h2>Last Price</h2><canvas id="chartLast"></canvas></div>
+  <div class="chart-box"><h2>Price Gap (Last %)</h2><canvas id="chartGap"></canvas></div>
+  <div class="chart-box"><h2>FR (8h Normalized)</h2><canvas id="chartFR"></canvas></div>
+  <div class="chart-box"><h2>FR (8h) Gap</h2><canvas id="chartFRGap"></canvas></div>
+</div>
+
+<script>
+const REPO = 'fmtk7re/KAIRI';
+const BRANCH = 'main';
+const REFRESH_SEC = 60;
+
+const CHART_COLORS = { gate: '#58a6ff', phemex: '#f0883e', gap: '#a371f7' };
+const CHART_OPTS = {
+  responsive: true,
+  animation: false,
+  scales: {
+    x: { type: 'time', time: { unit: 'minute', displayFormats: { minute: 'HH:mm' } },
+         ticks: { color: '#8b949e', maxTicksLimit: 12 }, grid: { color: '#21262d' } },
+    y: { ticks: { color: '#8b949e' }, grid: { color: '#21262d' } }
+  },
+  plugins: { legend: { labels: { color: '#c9d1d9' } } }
+};
+
+let charts = {};
+
+function initCharts() {
+  const ids = ['chartLast', 'chartGap', 'chartFR', 'chartFRGap'];
+  ids.forEach(id => {
+    const ctx = document.getElementById(id).getContext('2d');
+    charts[id] = new Chart(ctx, { type: 'line', data: { datasets: [] }, options: structuredClone(CHART_OPTS) });
+  });
+}
+
+function todayStr() {
+  const d = new Date();
+  return d.getUTCFullYear().toString() +
+    (d.getUTCMonth()+1).toString().padStart(2,'0') +
+    d.getUTCDate().toString().padStart(2,'0');
+}
+
+function yesterdayStr() {
+  const d = new Date(Date.now() - 86400000);
+  return d.getUTCFullYear().toString() +
+    (d.getUTCMonth()+1).toString().padStart(2,'0') +
+    d.getUTCDate().toString().padStart(2,'0');
+}
+
+async function fetchCSV(dateStr) {
+  const url = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/data/${dateStr}_river_futures.csv?t=${Date.now()}`;
+  try {
+    const r = await fetch(url);
+    if (!r.ok) return [];
+    const text = await r.text();
+    return parseCSV(text);
+  } catch { return []; }
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  if (lines.length < 2) return [];
+  const header = lines[0].split(',');
+  return lines.slice(1).map(line => {
+    const vals = line.split(',');
+    const obj = {};
+    header.forEach((h, i) => obj[h.trim()] = vals[i]?.trim() || '');
+    return obj;
+  });
+}
+
+function updateCharts(rows) {
+  const gate = rows.filter(r => r.exchange === 'gate');
+  const phemex = rows.filter(r => r.exchange === 'phemex');
+
+  // Last Price
+  charts.chartLast.data.datasets = [
+    { label: 'Gate', data: gate.map(r => ({ x: new Date(r.timestamp), y: parseFloat(r.last_price) })),
+      borderColor: CHART_COLORS.gate, borderWidth: 1.5, pointRadius: 0, tension: 0.2 },
+    { label: 'Phemex', data: phemex.map(r => ({ x: new Date(r.timestamp), y: parseFloat(r.last_price) })),
+      borderColor: CHART_COLORS.phemex, borderWidth: 1.5, pointRadius: 0, tension: 0.2 }
+  ];
+  charts.chartLast.update();
+
+  // Gap %
+  const gapData = [];
+  const gateMap = new Map(gate.map(r => [r.timestamp, r]));
+  phemex.forEach(p => {
+    const g = gateMap.get(p.timestamp);
+    if (g) {
+      const gp = parseFloat(g.last_price), pp = parseFloat(p.last_price);
+      if (pp) gapData.push({ x: new Date(p.timestamp), y: ((gp - pp) / pp * 100) });
+    }
+  });
+  charts.chartGap.data.datasets = [
+    { label: 'Gap %', data: gapData, borderColor: CHART_COLORS.gap, borderWidth: 1.5, pointRadius: 0, tension: 0.2 }
+  ];
+  charts.chartGap.update();
+
+  // FR (8h)
+  charts.chartFR.data.datasets = [
+    { label: 'Gate FR(8h)', data: gate.map(r => ({ x: new Date(r.timestamp), y: parseFloat(r.funding_rate_8h) * 100 })),
+      borderColor: CHART_COLORS.gate, borderWidth: 1.5, pointRadius: 0, tension: 0.2 },
+    { label: 'Phemex FR(8h)', data: phemex.map(r => ({ x: new Date(r.timestamp), y: parseFloat(r.funding_rate_8h) * 100 })),
+      borderColor: CHART_COLORS.phemex, borderWidth: 1.5, pointRadius: 0, tension: 0.2 }
+  ];
+  charts.chartFR.options.scales.y.ticks.callback = v => v.toFixed(2) + '%';
+  charts.chartFR.update();
+
+  // FR Gap
+  const frGapData = [];
+  phemex.forEach(p => {
+    const g = gateMap.get(p.timestamp);
+    if (g) {
+      frGapData.push({ x: new Date(p.timestamp), y: (parseFloat(g.funding_rate_8h) - parseFloat(p.funding_rate_8h)) * 100 });
+    }
+  });
+  charts.chartFRGap.data.datasets = [
+    { label: 'FR(8h) Gap', data: frGapData, borderColor: CHART_COLORS.gap, borderWidth: 1.5, pointRadius: 0, tension: 0.2 }
+  ];
+  charts.chartFRGap.options.scales.y.ticks.callback = v => v.toFixed(2) + '%';
+  charts.chartFRGap.update();
+
+  // Latest values card
+  updateLatest(gate, phemex);
+}
+
+function updateLatest(gate, phemex) {
+  const g = gate[gate.length - 1];
+  const p = phemex[phemex.length - 1];
+  if (!g || !p) return;
+
+  const gLast = parseFloat(g.last_price), pLast = parseFloat(p.last_price);
+  const gap = pLast ? ((gLast - pLast) / pLast * 100) : 0;
+  const gFR8h = parseFloat(g.funding_rate_8h) * 100;
+  const pFR8h = parseFloat(p.funding_rate_8h) * 100;
+  const frGap = gFR8h - pFR8h;
+
+  const cls = v => v >= 0 ? 'pos' : 'neg';
+  const sign = v => v >= 0 ? '+' : '';
+
+  document.getElementById('latest').innerHTML = `
+    <div class="card">
+      <h3>Last Price</h3>
+      <div>Gate: <span class="val">${gLast.toFixed(4)}</span></div>
+      <div>Phemex: <span class="val">${pLast.toFixed(4)}</span></div>
+    </div>
+    <div class="card">
+      <h3>Price Gap (Gate - Phemex)</h3>
+      <div class="val ${cls(gap)}">${sign(gap)}${gap.toFixed(4)}%</div>
+    </div>
+    <div class="card">
+      <h3>FR (8h Normalized)</h3>
+      <div>Gate: <span class="${cls(gFR8h)}">${sign(gFR8h)}${gFR8h.toFixed(4)}%</span> (${g.funding_interval_h}h)</div>
+      <div>Phemex: <span class="${cls(pFR8h)}">${sign(pFR8h)}${pFR8h.toFixed(4)}%</span> (${p.funding_interval_h}h)</div>
+      <div>Gap: <span class="val ${cls(frGap)}">${sign(frGap)}${frGap.toFixed(4)}%</span></div>
+    </div>
+  `;
+}
+
+async function refresh() {
+  const rows = await fetchCSV(todayStr());
+  let allRows = rows;
+  if (rows.length === 0) {
+    allRows = await fetchCSV(yesterdayStr());
+  }
+  if (allRows.length === 0) {
+    document.getElementById('status').textContent = 'No data available yet. Waiting for first collection...';
+    return;
+  }
+  updateCharts(allRows);
+  const now = new Date().toLocaleTimeString();
+  document.getElementById('status').textContent = `${allRows.length} data points | Last refresh: ${now} | Auto-refresh: ${REFRESH_SEC}s`;
+}
+
+initCharts();
+refresh();
+setInterval(refresh, REFRESH_SEC * 1000);
+</script>
+</body>
+</html>
