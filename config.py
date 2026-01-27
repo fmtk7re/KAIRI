@@ -14,7 +14,7 @@ DATA_DIR = "data"
 # Fallback funding interval (hours) when not available from API
 DEFAULT_FUNDING_INTERVAL_HOURS = {
     "gate": 8.0,
-    "phemex": 8.0,
+    "phemex": 4.0,
 }
 
 # Discord webhook URL (set via environment variable DISCORD_WEBHOOK_URL)
