@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 
 import requests
 
-from config import DEFAULT_FUNDING_INTERVAL_HOURS, REQUEST_TIMEOUT_SECONDS
+from config import REQUEST_TIMEOUT_SECONDS
 from models import TickerData
 from exchanges.base import BaseExchange
 
@@ -26,10 +26,11 @@ class GateExchange(BaseExchange):
 
         # funding_interval is in seconds; convert to hours
         fi_seconds = data.get("funding_interval", 0)
-        if fi_seconds and fi_seconds > 0:
-            fi_hours = fi_seconds / 3600.0
-        else:
-            fi_hours = DEFAULT_FUNDING_INTERVAL_HOURS.get(self.name, 8.0)
+        if not fi_seconds or fi_seconds <= 0:
+            raise ValueError(
+                f"Gate API did not return funding_interval for {symbol}"
+            )
+        fi_hours = fi_seconds / 3600.0
 
         return TickerData(
             exchange=self.name,

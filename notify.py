@@ -27,36 +27,59 @@ def _fmt_pct(val: Optional[float]) -> str:
     return f"{sign}{val:.4f}%"
 
 
+def _fr_pct(raw: str) -> str:
+    """Format a raw funding rate as percentage."""
+    try:
+        return f"{float(raw) * 100:.4f}%"
+    except (ValueError, TypeError):
+        return "N/A"
+
+
+def _fr8h_pct(ticker: TickerData) -> str:
+    """Format 8h-normalized funding rate as percentage."""
+    return f"{ticker.funding_rate_8h * 100:.4f}%"
+
+
 def build_gap_message(gate: TickerData, phemex: TickerData) -> str:
     """Build a human-readable gap report (Gate - Phemex)."""
     last_gap = _pct_diff(gate.last_price, phemex.last_price)
     mark_gap = _pct_diff(gate.mark_price, phemex.mark_price)
     index_gap = _pct_diff(gate.index_price, phemex.index_price)
-    fr_8h_diff = gate.funding_rate_8h - phemex.funding_rate_8h
+    fr_8h_diff = (gate.funding_rate_8h - phemex.funding_rate_8h) * 100
 
-    ts = gate.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC")
+    ts = gate.timestamp.strftime("%Y-%m-%d %H:%M UTC")
 
     lines = [
-        f"**RIVER Perpetual Futures Monitor** - {ts}",
-        "",
+        f"**RIVER Monitor** | {ts}",
         "```",
-        f"{'':>12} {'Gate':>14} {'Phemex':>14} {'Gap':>10}",
-        f"{'Last':>12} {gate.last_price:>14} {phemex.last_price:>14} {_fmt_pct(last_gap):>10}",
-        f"{'Mark':>12} {gate.mark_price:>14} {phemex.mark_price:>14} {_fmt_pct(mark_gap):>10}",
-        f"{'Index':>12} {gate.index_price:>14} {phemex.index_price:>14} {_fmt_pct(index_gap):>10}",
+        "[Gate]",
+        f" Last:  {gate.last_price}",
+        f" Mark:  {gate.mark_price}",
+        f" Index: {gate.index_price}",
+        f" FR: {_fr_pct(gate.funding_rate)} ({gate.funding_interval_hours:.0f}h)",
+        f" FR(8h): {_fr8h_pct(gate)}",
         "",
-        f"{'FR (raw)':>12} {gate.funding_rate:>14} {phemex.funding_rate:>14}",
-        f"{'FR intv':>12} {gate.funding_interval_hours:>13.0f}h {phemex.funding_interval_hours:>13.0f}h",
-        f"{'FR (8h)':>12} {gate.funding_rate_8h:>14.8f} {phemex.funding_rate_8h:>14.8f} {_fmt_pct_raw(fr_8h_diff):>10}",
+        "[Phemex]",
+        f" Last:  {phemex.last_price}",
+        f" Mark:  {phemex.mark_price}",
+        f" Index: {phemex.index_price}",
+        f" FR: {_fr_pct(phemex.funding_rate)} ({phemex.funding_interval_hours:.0f}h)",
+        f" FR(8h): {_fr8h_pct(phemex)}",
+        "",
+        "[Gap] Gate - Phemex",
+        f" Last:  {_fmt_pct(last_gap)}",
+        f" Mark:  {_fmt_pct(mark_gap)}",
+        f" Index: {_fmt_pct(index_gap)}",
+        f" FR8h:  {_fmt_fr_diff(fr_8h_diff)}",
         "```",
     ]
     return "\n".join(lines)
 
 
-def _fmt_pct_raw(val: float) -> str:
-    """Format a raw rate difference as percentage points."""
+def _fmt_fr_diff(val: float) -> str:
+    """Format FR difference in percentage points."""
     sign = "+" if val >= 0 else ""
-    return f"{sign}{val:.8f}"
+    return f"{sign}{val:.4f}%"
 
 
 def send_discord(message: str) -> None:
