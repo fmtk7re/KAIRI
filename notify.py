@@ -34,20 +34,30 @@ def build_gap_message(gate: TickerData, phemex: TickerData) -> str:
     index_gap = _pct_diff(gate.index_price, phemex.index_price)
     fr_8h_diff = gate.funding_rate_8h - phemex.funding_rate_8h
 
-    ts = gate.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC")
+    ts = gate.timestamp.strftime("%Y-%m-%d %H:%M UTC")
 
     lines = [
-        f"**RIVER Perpetual Futures Monitor** - {ts}",
-        "",
+        f"**RIVER Monitor** | {ts}",
         "```",
-        f"{'':>12} {'Gate':>14} {'Phemex':>14} {'Gap':>10}",
-        f"{'Last':>12} {gate.last_price:>14} {phemex.last_price:>14} {_fmt_pct(last_gap):>10}",
-        f"{'Mark':>12} {gate.mark_price:>14} {phemex.mark_price:>14} {_fmt_pct(mark_gap):>10}",
-        f"{'Index':>12} {gate.index_price:>14} {phemex.index_price:>14} {_fmt_pct(index_gap):>10}",
+        "[Gate]",
+        f" Last:  {gate.last_price}",
+        f" Mark:  {gate.mark_price}",
+        f" Index: {gate.index_price}",
+        f" FR: {gate.funding_rate}",
+        f"   ({gate.funding_interval_hours:.0f}h -> 8h: {gate.funding_rate_8h:.8f})",
         "",
-        f"{'FR (raw)':>12} {gate.funding_rate:>14} {phemex.funding_rate:>14}",
-        f"{'FR intv':>12} {gate.funding_interval_hours:>13.0f}h {phemex.funding_interval_hours:>13.0f}h",
-        f"{'FR (8h)':>12} {gate.funding_rate_8h:>14.8f} {phemex.funding_rate_8h:>14.8f} {_fmt_pct_raw(fr_8h_diff):>10}",
+        "[Phemex]",
+        f" Last:  {phemex.last_price}",
+        f" Mark:  {phemex.mark_price}",
+        f" Index: {phemex.index_price}",
+        f" FR: {phemex.funding_rate}",
+        f"   ({phemex.funding_interval_hours:.0f}h -> 8h: {phemex.funding_rate_8h:.8f})",
+        "",
+        "[Gap] Gate - Phemex",
+        f" Last:  {_fmt_pct(last_gap)}",
+        f" Mark:  {_fmt_pct(mark_gap)}",
+        f" Index: {_fmt_pct(index_gap)}",
+        f" FR8h:  {_fmt_pct_raw(fr_8h_diff)}",
         "```",
     ]
     return "\n".join(lines)
