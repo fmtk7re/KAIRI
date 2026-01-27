@@ -1,0 +1,10 @@
+SYMBOLS = {
+    "gate": "RIVER_USDT",
+    "phemex": "RIVERUSDT",
+}
+
+FETCH_INTERVAL_SECONDS = 60
+
+REQUEST_TIMEOUT_SECONDS = 10
+
+DATA_DIR = "data"
