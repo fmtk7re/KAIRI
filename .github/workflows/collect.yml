@@ -27,18 +27,20 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run collector (5h 50m)
-        run: python main.py --duration 21000
-
-      - name: Commit and push data
+      - name: Collect data and commit every 10 minutes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/
-          if git diff --cached --quiet; then
-            echo "No new data to commit"
-          else
-            git commit -m "data: $(date -u '+%Y-%m-%d %H:%M') UTC collection"
-            git pull --rebase origin "${{ github.ref_name }}"
-            git push
-          fi
+
+          END_TIME=$((SECONDS + 21000))
+
+          while [ $SECONDS -lt $END_TIME ]; do
+            python main.py --duration 600
+
+            git add data/
+            if ! git diff --cached --quiet; then
+              git commit -m "data: $(date -u '+%Y-%m-%d %H:%M') UTC"
+              git pull --rebase origin "${{ github.ref_name }}" || true
+              git push || true
+            fi
+          done
