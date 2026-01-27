@@ -1,3 +1,4 @@
+import argparse
 import logging
 import signal
 import sys
@@ -45,12 +46,22 @@ def fetch_all() -> None:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="RIVER perpetual futures data collector")
+    parser.add_argument(
+        "--duration",
+        type=int,
+        default=0,
+        help="Max run duration in seconds (0 = unlimited)",
+    )
+    args = parser.parse_args()
+
     signal.signal(signal.SIGINT, lambda *_: sys.exit(0))
     signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
 
     logger.info(
-        "Starting RIVER perpetual futures data collector (interval=%ds)",
+        "Starting RIVER perpetual futures data collector (interval=%ds, duration=%s)",
         FETCH_INTERVAL_SECONDS,
+        f"{args.duration}s" if args.duration else "unlimited",
     )
 
     # Run once immediately at startup
@@ -58,7 +69,11 @@ def main() -> None:
 
     schedule.every(FETCH_INTERVAL_SECONDS).seconds.do(fetch_all)
 
+    start = time.monotonic()
     while True:
+        if args.duration and (time.monotonic() - start) >= args.duration:
+            logger.info("Duration limit reached. Stopping.")
+            break
         schedule.run_pending()
         time.sleep(1)
 
