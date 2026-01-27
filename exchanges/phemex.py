@@ -24,12 +24,12 @@ class PhemexExchange(BaseExchange):
         resp.raise_for_status()
         body = resp.json()
 
-        if body.get("code") != 0:
+        if body.get("error") is not None:
             raise ValueError(
-                f"Phemex API error: code={body.get('code')}, msg={body.get('msg')}"
+                f"Phemex API error: {body.get('error')}"
             )
 
-        data = body.get("data", {})
+        data = body.get("result", {})
 
         return TickerData(
             exchange=self.name,
