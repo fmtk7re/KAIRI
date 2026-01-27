@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 
 import requests
 
-from config import REQUEST_TIMEOUT_SECONDS
+from config import DEFAULT_FUNDING_INTERVAL_HOURS, REQUEST_TIMEOUT_SECONDS
 from models import TickerData
 from exchanges.base import BaseExchange
 
@@ -31,6 +31,8 @@ class PhemexExchange(BaseExchange):
 
         data = body.get("result", {})
 
+        fi_hours = DEFAULT_FUNDING_INTERVAL_HOURS.get(self.name, 8.0)
+
         return TickerData(
             exchange=self.name,
             symbol=symbol,
@@ -39,4 +41,5 @@ class PhemexExchange(BaseExchange):
             mark_price=data.get("markPriceRp", ""),
             index_price=data.get("indexPriceRp", ""),
             funding_rate=data.get("fundingRateRr", ""),
+            funding_interval_hours=fi_hours,
         )

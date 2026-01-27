@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 
 import requests
 
-from config import REQUEST_TIMEOUT_SECONDS
+from config import DEFAULT_FUNDING_INTERVAL_HOURS, REQUEST_TIMEOUT_SECONDS
 from models import TickerData
 from exchanges.base import BaseExchange
 
@@ -18,23 +18,26 @@ class GateExchange(BaseExchange):
         return "gate"
 
     def fetch_ticker(self, symbol: str) -> TickerData:
-        url = f"{BASE_URL}/futures/usdt/tickers"
-        params = {"contract": symbol}
-        resp = requests.get(url, params=params, timeout=REQUEST_TIMEOUT_SECONDS)
+        # Contract endpoint returns prices + funding_interval in one call
+        url = f"{BASE_URL}/futures/usdt/contracts/{symbol}"
+        resp = requests.get(url, timeout=REQUEST_TIMEOUT_SECONDS)
         resp.raise_for_status()
         data = resp.json()
 
-        if isinstance(data, list):
-            if not data:
-                raise ValueError(f"Gate.io returned empty list for {symbol}")
-            data = data[0]
+        # funding_interval is in seconds; convert to hours
+        fi_seconds = data.get("funding_interval", 0)
+        if fi_seconds and fi_seconds > 0:
+            fi_hours = fi_seconds / 3600.0
+        else:
+            fi_hours = DEFAULT_FUNDING_INTERVAL_HOURS.get(self.name, 8.0)
 
         return TickerData(
             exchange=self.name,
             symbol=symbol,
             timestamp=datetime.now(timezone.utc),
-            last_price=data.get("last", ""),
+            last_price=data.get("last_price", ""),
             mark_price=data.get("mark_price", ""),
             index_price=data.get("index_price", ""),
             funding_rate=data.get("funding_rate", ""),
+            funding_interval_hours=fi_hours,
         )
