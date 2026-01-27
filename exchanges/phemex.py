@@ -22,17 +22,18 @@ class PhemexExchange(BaseExchange):
         return "phemex"
 
     def _fetch_funding_interval(self, symbol: str) -> float:
-        """Fetch funding interval from /cfg/v2/products endpoint."""
+        """Fetch funding interval from /public/products endpoint."""
         if symbol in self._fi_cache:
             return self._fi_cache[symbol]
 
-        url = f"{BASE_URL}/cfg/v2/products"
+        url = f"{BASE_URL}/public/products"
         resp = requests.get(url, timeout=REQUEST_TIMEOUT_SECONDS)
         resp.raise_for_status()
         body = resp.json()
 
         # Search in perpProductsV2 for the matching symbol
-        for product in body.get("data", {}).get("perpProductsV2", []):
+        data = body.get("data", body)
+        for product in data.get("perpProductsV2", []):
             if product.get("symbol") == symbol:
                 fi_seconds = product.get("fundingInterval", 0)
                 if fi_seconds and fi_seconds > 0:
