@@ -11,7 +11,7 @@ from discover import discover_common_pairs
 from exchanges.gate import GateExchange
 from exchanges.phemex import PhemexExchange
 from notify import build_gap_message, send_discord
-from storage import save_ticker
+from storage import save_pairs_json, save_ticker
 
 logging.basicConfig(
     level=logging.INFO,
@@ -118,6 +118,7 @@ def main() -> None:
 
     if config.DISCOVER_ALL:
         pairs = discover_common_pairs()
+        save_pairs_json(pairs)
         logger.info(
             "DISCOVER_ALL mode: %d common pairs found (interval=%ds, duration=%s)",
             len(pairs),
