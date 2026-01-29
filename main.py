@@ -6,7 +6,8 @@ import time
 
 import schedule
 
-from config import FETCH_INTERVAL_SECONDS, PAIRS
+import config
+from discover import discover_common_pairs
 from exchanges.gate import GateExchange
 from exchanges.phemex import PhemexExchange
 from notify import build_gap_message, send_discord
@@ -25,8 +26,40 @@ EXCHANGES = {
 }
 
 
-def fetch_all() -> None:
-    for pair in PAIRS:
+# ------------------------------------------------------------------
+# Fetch strategies
+# ------------------------------------------------------------------
+
+def fetch_all_bulk() -> None:
+    """Bulk-fetch every common pair (Gate: 1 call, Phemex: threaded)."""
+    try:
+        gate_tickers = EXCHANGES["gate"].fetch_all_tickers()
+    except Exception:
+        logger.exception("Gate bulk fetch failed")
+        gate_tickers = {}
+
+    try:
+        phemex_tickers = EXCHANGES["phemex"].fetch_all_tickers()
+    except Exception:
+        logger.exception("Phemex bulk fetch failed")
+        phemex_tickers = {}
+
+    common = sorted(set(gate_tickers) & set(phemex_tickers))
+    logger.info("Saving %d common pairs", len(common))
+
+    for base in common:
+        gt = gate_tickers[base]
+        pt = phemex_tickers[base]
+        try:
+            save_ticker(gt, base)
+            save_ticker(pt, base)
+        except Exception:
+            logger.exception("Failed to save %s", base)
+
+
+def fetch_all_static() -> None:
+    """Original per-pair fetch using the static PAIRS list."""
+    for pair in config.PAIRS:
         pair_name = pair["name"]
         tickers = {}
         for ex_name, ex in EXCHANGES.items():
@@ -51,7 +84,6 @@ def fetch_all() -> None:
             except Exception:
                 logger.exception("Failed to fetch %s from %s", pair_name, ex_name)
 
-        # Calculate and report gap if both exchanges returned data
         gate = tickers.get("gate")
         phemex = tickers.get("phemex")
         if gate and phemex:
@@ -59,6 +91,17 @@ def fetch_all() -> None:
             logger.info("Gap report [%s]:\n%s", pair_name, message)
             send_discord(message)
 
+
+def fetch_all() -> None:
+    if config.DISCOVER_ALL:
+        fetch_all_bulk()
+    else:
+        fetch_all_static()
+
+
+# ------------------------------------------------------------------
+# Entry point
+# ------------------------------------------------------------------
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Perpetual futures data collector")
@@ -73,18 +116,27 @@ def main() -> None:
     signal.signal(signal.SIGINT, lambda *_: sys.exit(0))
     signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
 
-    pair_names = ", ".join(p["name"] for p in PAIRS)
-    logger.info(
-        "Starting perpetual futures data collector (pairs=%s, interval=%ds, duration=%s)",
-        pair_names,
-        FETCH_INTERVAL_SECONDS,
-        f"{args.duration}s" if args.duration else "unlimited",
-    )
+    if config.DISCOVER_ALL:
+        pairs = discover_common_pairs()
+        logger.info(
+            "DISCOVER_ALL mode: %d common pairs found (interval=%ds, duration=%s)",
+            len(pairs),
+            config.FETCH_INTERVAL_SECONDS,
+            f"{args.duration}s" if args.duration else "unlimited",
+        )
+    else:
+        pair_names = ", ".join(p["name"] for p in config.PAIRS)
+        logger.info(
+            "Static mode: pairs=%s, interval=%ds, duration=%s",
+            pair_names,
+            config.FETCH_INTERVAL_SECONDS,
+            f"{args.duration}s" if args.duration else "unlimited",
+        )
 
     # Run once immediately at startup
     fetch_all()
 
-    schedule.every(FETCH_INTERVAL_SECONDS).seconds.do(fetch_all)
+    schedule.every(config.FETCH_INTERVAL_SECONDS).seconds.do(fetch_all)
 
     start = time.monotonic()
     while True:

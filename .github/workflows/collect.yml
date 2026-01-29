@@ -1,4 +1,4 @@
-name: Collect RIVER Futures Data
+name: Collect Futures Data
 
 on:
   schedule:

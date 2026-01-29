@@ -11,9 +11,40 @@
 body { background: #0d1117; color: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', monospace; padding: 16px; }
 h1 { font-size: 1.2em; margin-bottom: 4px; }
 .status { font-size: 0.85em; color: #8b949e; margin-bottom: 12px; }
-.tabs { display: flex; gap: 8px; margin-bottom: 16px; }
-.tab { padding: 6px 16px; border: 1px solid #30363d; border-radius: 6px; background: #161b22; color: #8b949e; cursor: pointer; font-size: 0.9em; }
-.tab.active { background: #1f6feb; color: #fff; border-color: #1f6feb; }
+
+/* ---- Symbol selector ---- */
+.symbol-selector { position: relative; max-width: 420px; margin-bottom: 16px; }
+.search-box {
+  display: flex; align-items: center; gap: 8px;
+  background: #161b22; border: 1px solid #30363d; border-radius: 6px;
+  padding: 6px 12px; cursor: text;
+}
+.search-box .current { color: #58a6ff; font-weight: bold; font-size: 1em; min-width: 40px; }
+.search-box input {
+  flex: 1; background: none; border: none; color: #c9d1d9;
+  font-size: 0.95em; outline: none; padding: 4px 0;
+  font-family: inherit;
+}
+.search-box input::placeholder { color: #484f58; }
+.search-box .count { font-size: 0.75em; color: #484f58; white-space: nowrap; }
+.dropdown {
+  position: absolute; top: 100%; left: 0; right: 0; max-height: 340px;
+  overflow-y: auto; background: #161b22; border: 1px solid #30363d;
+  border-top: none; border-radius: 0 0 6px 6px; display: none; z-index: 100;
+}
+.dropdown.show { display: block; }
+.dropdown .item {
+  padding: 8px 12px; cursor: pointer; font-size: 0.9em;
+  display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 1px solid #21262d;
+}
+.dropdown .item:hover, .dropdown .item.highlight { background: #1f6feb; color: #fff; }
+.dropdown .item .sym { font-weight: bold; }
+.dropdown .item .meta { font-size: 0.75em; color: #8b949e; }
+.dropdown .item:hover .meta, .dropdown .item.highlight .meta { color: #c9d1d9; }
+.dropdown .empty { padding: 12px; text-align: center; color: #484f58; font-size: 0.85em; }
+
+/* ---- Cards & charts ---- */
 .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .chart-box { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 12px; }
 .chart-box h2 { font-size: 0.9em; margin-bottom: 8px; color: #58a6ff; }
@@ -26,6 +57,8 @@ canvas { width: 100% !important; }
 .neg { color: #f85149; }
 .live-badge { display: inline-block; background: #238636; color: #fff; font-size: 0.7em; padding: 2px 6px; border-radius: 4px; margin-left: 6px; vertical-align: middle; }
 .live-badge.error { background: #da3633; }
+.loading-msg { text-align: center; padding: 40px; color: #8b949e; font-size: 1.1em; }
+
 @media (max-width: 900px) {
   .charts { grid-template-columns: 1fr; }
   .latest { grid-template-columns: 1fr; }
@@ -34,9 +67,18 @@ canvas { width: 100% !important; }
 </head>
 <body>
 <h1>Perpetual Futures Monitor <span class="live-badge" id="liveBadge">---</span></h1>
-<div class="status" id="status">Connecting...</div>
+<div class="status" id="status">Loading symbols…</div>
 
-<div class="tabs" id="tabs"></div>
+<!-- Symbol selector -->
+<div class="symbol-selector" id="selectorWrap">
+  <div class="search-box" id="searchBox">
+    <span class="current" id="currentSymbol">---</span>
+    <input type="text" id="symbolSearch" placeholder="Search symbol…" autocomplete="off">
+    <span class="count" id="symbolCount"></span>
+  </div>
+  <div class="dropdown" id="dropdown"></div>
+</div>
+
 <div class="latest" id="latest"></div>
 <div class="charts">
   <div class="chart-box"><h2>Last Price</h2><canvas id="chartLast"></canvas></div>
@@ -46,20 +88,26 @@ canvas { width: 100% !important; }
 </div>
 
 <script>
+// ======================================================================
+// Config
+// ======================================================================
 const REPO = 'fmtk7re/KAIRI';
 const BRANCH = 'main';
 const CHART_REFRESH_SEC = 60;
 const LIVE_REFRESH_SEC = 15;
-const PAIRS = ['RIVER', 'SENT'];
-const PAIR_SYMBOLS = {
-  RIVER: { gate: 'RIVER_USDT', phemex: 'RIVERUSDT' },
-  SENT:  { gate: 'SENT_USDT',  phemex: 'SENTUSDT' },
-};
 
-let currentPair = PAIRS[0];
-// Cache: phemex symbol -> funding interval hours (fetched once from /public/products)
-let phemexFiCache = {};
+const CORS_PROXY = 'https://corsproxy.io/?url=';
 
+// State
+let allPairs = [];          // [{base, gate, phemex}, …]
+let pairMap = {};           // base -> {gate, phemex}
+let currentPair = '';       // selected base name
+let phemexFiCache = {};     // phemex symbol -> funding interval hours
+let hlIndex = -1;           // dropdown highlight index
+
+// ======================================================================
+// Charts
+// ======================================================================
 const CHART_COLORS = { gate: '#58a6ff', phemex: '#f0883e', gap: '#a371f7' };
 const CHART_OPTS = {
   responsive: true,
@@ -75,28 +123,165 @@ const CHART_OPTS = {
 let charts = {};
 
 function initCharts() {
-  const ids = ['chartLast', 'chartGap', 'chartFR', 'chartFRGap'];
-  ids.forEach(id => {
+  ['chartLast', 'chartGap', 'chartFR', 'chartFRGap'].forEach(id => {
     const ctx = document.getElementById(id).getContext('2d');
     charts[id] = new Chart(ctx, { type: 'line', data: { datasets: [] }, options: structuredClone(CHART_OPTS) });
   });
 }
 
-function renderTabs() {
-  const container = document.getElementById('tabs');
-  container.innerHTML = PAIRS.map(p =>
-    `<div class="tab ${p === currentPair ? 'active' : ''}" data-pair="${p}">${p}</div>`
-  ).join('');
-  container.querySelectorAll('.tab').forEach(el => {
-    el.addEventListener('click', () => {
-      currentPair = el.dataset.pair;
-      renderTabs();
-      refreshCharts();
-      refreshLive();
-    });
-  });
+// ======================================================================
+// Symbol discovery
+// ======================================================================
+async function proxiedFetch(url) {
+  return fetch(CORS_PROXY + encodeURIComponent(url));
 }
 
+async function discoverSymbols() {
+  // Fetch Gate contracts + Phemex products in parallel
+  const [gateRes, phemexRes] = await Promise.all([
+    proxiedFetch('https://api.gateio.ws/api/v4/futures/usdt/contracts'),
+    proxiedFetch('https://api.phemex.com/public/products'),
+  ]);
+
+  const gateContracts = await gateRes.json();
+  const phemexBody = await phemexRes.json();
+  const phemexProducts = (phemexBody.data || phemexBody).perpProductsV2 || [];
+
+  // Build maps: base -> exchange symbol
+  const gateMap = {};
+  for (const c of gateContracts) {
+    const name = c.name || '';
+    if (name.endsWith('_USDT')) {
+      gateMap[name.slice(0, -5)] = name;
+    }
+  }
+
+  const phemexMap = {};
+  for (const p of phemexProducts) {
+    const sym = p.symbol || '';
+    if (sym.endsWith('USDT')) {
+      const base = sym.slice(0, -4);
+      phemexMap[base] = sym;
+      // Cache funding interval
+      const fi = p.fundingInterval;
+      if (fi && fi > 0) phemexFiCache[sym] = fi / 3600;
+    }
+  }
+
+  // Intersection
+  const commonBases = Object.keys(gateMap).filter(b => phemexMap[b]).sort();
+  allPairs = commonBases.map(base => ({ base, gate: gateMap[base], phemex: phemexMap[base] }));
+  pairMap = {};
+  for (const p of allPairs) pairMap[p.base] = p;
+
+  return allPairs;
+}
+
+// ======================================================================
+// Searchable dropdown
+// ======================================================================
+function renderDropdown(filter = '') {
+  const dd = document.getElementById('dropdown');
+  const q = filter.toUpperCase();
+  const filtered = q ? allPairs.filter(p => p.base.toUpperCase().includes(q)) : allPairs;
+
+  if (filtered.length === 0) {
+    dd.innerHTML = '<div class="empty">No matching symbols</div>';
+    dd.classList.add('show');
+    hlIndex = -1;
+    return filtered;
+  }
+
+  dd.innerHTML = filtered.map((p, i) =>
+    `<div class="item${i === hlIndex ? ' highlight' : ''}" data-base="${p.base}">
+       <span class="sym">${p.base}</span>
+       <span class="meta">${p.gate} / ${p.phemex}</span>
+     </div>`
+  ).join('');
+  dd.classList.add('show');
+
+  // Click handler
+  dd.querySelectorAll('.item').forEach(el => {
+    el.addEventListener('click', () => selectPair(el.dataset.base));
+  });
+
+  return filtered;
+}
+
+function selectPair(base) {
+  if (!pairMap[base]) return;
+  currentPair = base;
+  document.getElementById('currentSymbol').textContent = base;
+  document.getElementById('symbolSearch').value = '';
+  document.getElementById('dropdown').classList.remove('show');
+  hlIndex = -1;
+  refreshLive();
+  refreshCharts();
+}
+
+function setupSelector() {
+  const input = document.getElementById('symbolSearch');
+  const dd = document.getElementById('dropdown');
+  const box = document.getElementById('searchBox');
+
+  document.getElementById('symbolCount').textContent = `${allPairs.length} pairs`;
+
+  let filtered = allPairs;
+
+  input.addEventListener('focus', () => {
+    hlIndex = -1;
+    filtered = renderDropdown(input.value);
+  });
+
+  input.addEventListener('input', () => {
+    hlIndex = -1;
+    filtered = renderDropdown(input.value);
+  });
+
+  input.addEventListener('keydown', (e) => {
+    const items = dd.querySelectorAll('.item');
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      hlIndex = Math.min(hlIndex + 1, items.length - 1);
+      updateHighlight(items);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      hlIndex = Math.max(hlIndex - 1, 0);
+      updateHighlight(items);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (hlIndex >= 0 && items[hlIndex]) {
+        selectPair(items[hlIndex].dataset.base);
+      } else if (filtered.length > 0) {
+        selectPair(filtered[0].base);
+      }
+    } else if (e.key === 'Escape') {
+      dd.classList.remove('show');
+      input.blur();
+    }
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('selectorWrap').contains(e.target)) {
+      dd.classList.remove('show');
+    }
+  });
+
+  // Clicking the box focuses the input
+  box.addEventListener('click', () => input.focus());
+}
+
+function updateHighlight(items) {
+  items.forEach((el, i) => {
+    el.classList.toggle('highlight', i === hlIndex);
+  });
+  if (items[hlIndex]) items[hlIndex].scrollIntoView({ block: 'nearest' });
+}
+
+// ======================================================================
+// CSV helpers
+// ======================================================================
 function todayStr() {
   const d = new Date();
   return d.getUTCFullYear().toString() +
@@ -133,77 +318,48 @@ function parseCSV(text) {
   });
 }
 
-// --- Live API calls (via CORS proxy) ---
-
-const CORS_PROXY = 'https://corsproxy.io/?url=';
-
-async function proxiedFetch(url) {
-  return fetch(CORS_PROXY + encodeURIComponent(url));
-}
-
-async function fetchPhemexFundingIntervals() {
-  try {
-    const r = await proxiedFetch('https://api.phemex.com/public/products');
-    if (!r.ok) return;
-    const body = await r.json();
-    const products = (body.data || body).perpProductsV2 || [];
-    for (const p of products) {
-      const fi = p.fundingInterval;
-      if (p.symbol && fi && fi > 0) {
-        phemexFiCache[p.symbol] = fi / 3600;
-      }
-    }
-  } catch (e) { console.warn('Failed to fetch Phemex products:', e); }
-}
-
+// ======================================================================
+// Live API calls
+// ======================================================================
 async function fetchLiveGate(symbol) {
   try {
     const url = `https://api.gateio.ws/api/v4/futures/usdt/contracts/${symbol}`;
     const r = await proxiedFetch(url);
-    if (!r.ok) { console.warn('Gate API status:', r.status); return null; }
+    if (!r.ok) return null;
     const d = await r.json();
     const lp = parseFloat(d.last_price);
-    if (!lp || lp <= 0) { console.warn('Gate bad last_price:', d.last_price); return null; }
+    if (!lp || lp <= 0) return null;
     const fiHours = (d.funding_interval || 0) / 3600;
     const fr = parseFloat(d.funding_rate || '0');
     const fr8h = fiHours > 0 ? fr * (8 / fiHours) : 0;
-    return {
-      last_price: lp,
-      mark_price: parseFloat(d.mark_price || '0'),
-      index_price: parseFloat(d.index_price || '0'),
-      funding_rate: fr,
-      funding_interval_hours: fiHours,
-      funding_rate_8h: fr8h,
-    };
-  } catch (e) { console.warn('Gate fetch error:', e); return null; }
+    return { last_price: lp, mark_price: parseFloat(d.mark_price || '0'),
+             index_price: parseFloat(d.index_price || '0'),
+             funding_rate: fr, funding_interval_hours: fiHours, funding_rate_8h: fr8h };
+  } catch { return null; }
 }
 
 async function fetchLivePhemex(symbol) {
   try {
     const url = `https://api.phemex.com/md/v2/ticker/24hr?symbol=${symbol}`;
     const r = await proxiedFetch(url);
-    if (!r.ok) { console.warn('Phemex API status:', r.status); return null; }
+    if (!r.ok) return null;
     const body = await r.json();
-    if (body.error !== undefined && body.error !== null) {
-      console.warn('Phemex API error:', body.error); return null;
-    }
+    if (body.error !== undefined && body.error !== null) return null;
     const d = body.result || {};
     const lp = parseFloat(d.closeRp);
-    if (!lp || lp <= 0) { console.warn('Phemex bad closeRp:', d.closeRp); return null; }
+    if (!lp || lp <= 0) return null;
     const fiHours = phemexFiCache[symbol] || 4;
     const fr = parseFloat(d.fundingRateRr || '0');
     const fr8h = fiHours > 0 ? fr * (8 / fiHours) : 0;
-    return {
-      last_price: lp,
-      mark_price: parseFloat(d.markPriceRp || '0'),
-      index_price: parseFloat(d.indexPriceRp || '0'),
-      funding_rate: fr,
-      funding_interval_hours: fiHours,
-      funding_rate_8h: fr8h,
-    };
-  } catch (e) { console.warn('Phemex fetch error:', e); return null; }
+    return { last_price: lp, mark_price: parseFloat(d.markPriceRp || '0'),
+             index_price: parseFloat(d.indexPriceRp || '0'),
+             funding_rate: fr, funding_interval_hours: fiHours, funding_rate_8h: fr8h };
+  } catch { return null; }
 }
 
+// ======================================================================
+// Render
+// ======================================================================
 function renderLatest(gate, phemex) {
   const gLast = gate.last_price, pLast = phemex.last_price;
   const gap = pLast ? ((gLast - pLast) / pLast * 100) : 0;
@@ -221,7 +377,7 @@ function renderLatest(gate, phemex) {
       <div>Phemex: <span class="val">${pLast.toFixed(4)}</span></div>
     </div>
     <div class="card">
-      <h3>Price Gap (Gate - Phemex)</h3>
+      <h3>Price Gap (Gate − Phemex)</h3>
       <div class="val ${cls(gap)}">${sign(gap)}${gap.toFixed(4)}%</div>
     </div>
     <div class="card">
@@ -240,30 +396,21 @@ function latestFromCSV(rows) {
   const p = phemex[phemex.length - 1];
   if (!g || !p) return null;
   return {
-    gate: {
-      last_price: parseFloat(g.last_price),
-      mark_price: parseFloat(g.mark_price),
-      index_price: parseFloat(g.index_price),
-      funding_rate_8h: parseFloat(g.funding_rate_8h),
-      funding_interval_hours: parseFloat(g.funding_interval_h || '0'),
-    },
-    phemex: {
-      last_price: parseFloat(p.last_price),
-      mark_price: parseFloat(p.mark_price),
-      index_price: parseFloat(p.index_price),
-      funding_rate_8h: parseFloat(p.funding_rate_8h),
-      funding_interval_hours: parseFloat(p.funding_interval_h || '0'),
-    }
+    gate: { last_price: parseFloat(g.last_price), mark_price: parseFloat(g.mark_price),
+            index_price: parseFloat(g.index_price), funding_rate_8h: parseFloat(g.funding_rate_8h),
+            funding_interval_hours: parseFloat(g.funding_interval_h || '0') },
+    phemex: { last_price: parseFloat(p.last_price), mark_price: parseFloat(p.mark_price),
+              index_price: parseFloat(p.index_price), funding_rate_8h: parseFloat(p.funding_rate_8h),
+              funding_interval_hours: parseFloat(p.funding_interval_h || '0') }
   };
 }
 
 async function refreshLive() {
-  const symbols = PAIR_SYMBOLS[currentPair];
-  if (!symbols) return;
+  if (!currentPair || !pairMap[currentPair]) return;
+  const symbols = pairMap[currentPair];
   const badge = document.getElementById('liveBadge');
   const now = new Date().toLocaleTimeString();
 
-  // Try live API first
   const [gate, phemex] = await Promise.all([
     fetchLiveGate(symbols.gate),
     fetchLivePhemex(symbols.phemex),
@@ -278,8 +425,7 @@ async function refreshLive() {
     return;
   }
 
-  // Fallback: show latest from CSV
-  console.warn('Live API failed, falling back to CSV. gate:', !!gate, 'phemex:', !!phemex);
+  // Fallback: CSV
   let rows = await fetchCSV(todayStr(), currentPair);
   if (rows.length === 0) rows = await fetchCSV(yesterdayStr(), currentPair);
   const csv = latestFromCSV(rows);
@@ -297,8 +443,9 @@ async function refreshLive() {
   }
 }
 
-// --- Chart updates (from CSV) ---
-
+// ======================================================================
+// Chart updates (from CSV)
+// ======================================================================
 function updateCharts(rows) {
   const gate = rows.filter(r => r.exchange === 'gate');
   const phemex = rows.filter(r => r.exchange === 'phemex');
@@ -349,28 +496,48 @@ function updateCharts(rows) {
 }
 
 async function refreshCharts() {
-  const rows = await fetchCSV(todayStr(), currentPair);
-  let allRows = rows;
+  if (!currentPair) return;
+  let rows = await fetchCSV(todayStr(), currentPair);
+  if (rows.length === 0) rows = await fetchCSV(yesterdayStr(), currentPair);
   if (rows.length === 0) {
-    allRows = await fetchCSV(yesterdayStr(), currentPair);
-  }
-  if (allRows.length === 0) {
     Object.values(charts).forEach(c => { c.data.datasets = []; c.update(); });
     return;
   }
-  updateCharts(allRows);
+  updateCharts(rows);
 }
 
-// --- Init ---
+// ======================================================================
+// Init
+// ======================================================================
+let liveTimer = null;
+let chartTimer = null;
 
 async function init() {
   initCharts();
-  renderTabs();
-  await fetchPhemexFundingIntervals();
-  refreshLive();
-  refreshCharts();
-  setInterval(refreshLive, LIVE_REFRESH_SEC * 1000);
-  setInterval(refreshCharts, CHART_REFRESH_SEC * 1000);
+  document.getElementById('status').textContent = 'Discovering symbols…';
+
+  try {
+    await discoverSymbols();
+  } catch (e) {
+    console.error('Symbol discovery failed:', e);
+    // Fallback to hardcoded list
+    allPairs = [
+      { base: 'RIVER', gate: 'RIVER_USDT', phemex: 'RIVERUSDT' },
+      { base: 'SENT',  gate: 'SENT_USDT',  phemex: 'SENTUSDT' },
+    ];
+    pairMap = {};
+    for (const p of allPairs) pairMap[p.base] = p;
+  }
+
+  setupSelector();
+
+  // Select first pair
+  if (allPairs.length > 0) {
+    selectPair(allPairs[0].base);
+  }
+
+  liveTimer = setInterval(refreshLive, LIVE_REFRESH_SEC * 1000);
+  chartTimer = setInterval(refreshCharts, CHART_REFRESH_SEC * 1000);
 }
 
 init();
