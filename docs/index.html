@@ -33,8 +33,8 @@ canvas { width: 100% !important; }
 </style>
 </head>
 <body>
-<h1>Perpetual Futures Monitor <span class="live-badge" id="liveBadge">LIVE</span></h1>
-<div class="status" id="status">Loading...</div>
+<h1>Perpetual Futures Monitor <span class="live-badge" id="liveBadge">---</span></h1>
+<div class="status" id="status">Connecting...</div>
 
 <div class="tabs" id="tabs"></div>
 <div class="latest" id="latest"></div>
@@ -157,41 +157,51 @@ async function fetchPhemexFundingIntervals() {
 }
 
 async function fetchLiveGate(symbol) {
-  const url = `https://api.gateio.ws/api/v4/futures/usdt/contracts/${symbol}`;
-  const r = await proxiedFetch(url);
-  if (!r.ok) return null;
-  const d = await r.json();
-  const fiHours = (d.funding_interval || 0) / 3600;
-  const fr = parseFloat(d.funding_rate || '0');
-  const fr8h = fiHours > 0 ? fr * (8 / fiHours) : 0;
-  return {
-    last_price: parseFloat(d.last_price || '0'),
-    mark_price: parseFloat(d.mark_price || '0'),
-    index_price: parseFloat(d.index_price || '0'),
-    funding_rate: fr,
-    funding_interval_hours: fiHours,
-    funding_rate_8h: fr8h,
-  };
+  try {
+    const url = `https://api.gateio.ws/api/v4/futures/usdt/contracts/${symbol}`;
+    const r = await proxiedFetch(url);
+    if (!r.ok) { console.warn('Gate API status:', r.status); return null; }
+    const d = await r.json();
+    const lp = parseFloat(d.last_price);
+    if (!lp || lp <= 0) { console.warn('Gate bad last_price:', d.last_price); return null; }
+    const fiHours = (d.funding_interval || 0) / 3600;
+    const fr = parseFloat(d.funding_rate || '0');
+    const fr8h = fiHours > 0 ? fr * (8 / fiHours) : 0;
+    return {
+      last_price: lp,
+      mark_price: parseFloat(d.mark_price || '0'),
+      index_price: parseFloat(d.index_price || '0'),
+      funding_rate: fr,
+      funding_interval_hours: fiHours,
+      funding_rate_8h: fr8h,
+    };
+  } catch (e) { console.warn('Gate fetch error:', e); return null; }
 }
 
 async function fetchLivePhemex(symbol) {
-  const url = `https://api.phemex.com/md/v2/ticker/24hr?symbol=${symbol}`;
-  const r = await proxiedFetch(url);
-  if (!r.ok) return null;
-  const body = await r.json();
-  if (body.error) return null;
-  const d = body.result || {};
-  const fiHours = phemexFiCache[symbol] || 4;
-  const fr = parseFloat(d.fundingRateRr || '0');
-  const fr8h = fiHours > 0 ? fr * (8 / fiHours) : 0;
-  return {
-    last_price: parseFloat(d.closeRp || '0'),
-    mark_price: parseFloat(d.markPriceRp || '0'),
-    index_price: parseFloat(d.indexPriceRp || '0'),
-    funding_rate: fr,
-    funding_interval_hours: fiHours,
-    funding_rate_8h: fr8h,
-  };
+  try {
+    const url = `https://api.phemex.com/md/v2/ticker/24hr?symbol=${symbol}`;
+    const r = await proxiedFetch(url);
+    if (!r.ok) { console.warn('Phemex API status:', r.status); return null; }
+    const body = await r.json();
+    if (body.error !== undefined && body.error !== null) {
+      console.warn('Phemex API error:', body.error); return null;
+    }
+    const d = body.result || {};
+    const lp = parseFloat(d.closeRp);
+    if (!lp || lp <= 0) { console.warn('Phemex bad closeRp:', d.closeRp); return null; }
+    const fiHours = phemexFiCache[symbol] || 4;
+    const fr = parseFloat(d.fundingRateRr || '0');
+    const fr8h = fiHours > 0 ? fr * (8 / fiHours) : 0;
+    return {
+      last_price: lp,
+      mark_price: parseFloat(d.markPriceRp || '0'),
+      index_price: parseFloat(d.indexPriceRp || '0'),
+      funding_rate: fr,
+      funding_interval_hours: fiHours,
+      funding_rate_8h: fr8h,
+    };
+  } catch (e) { console.warn('Phemex fetch error:', e); return null; }
 }
 
 function renderLatest(gate, phemex) {
@@ -223,27 +233,67 @@ function renderLatest(gate, phemex) {
   `;
 }
 
+function latestFromCSV(rows) {
+  const gate = rows.filter(r => r.exchange === 'gate');
+  const phemex = rows.filter(r => r.exchange === 'phemex');
+  const g = gate[gate.length - 1];
+  const p = phemex[phemex.length - 1];
+  if (!g || !p) return null;
+  return {
+    gate: {
+      last_price: parseFloat(g.last_price),
+      mark_price: parseFloat(g.mark_price),
+      index_price: parseFloat(g.index_price),
+      funding_rate_8h: parseFloat(g.funding_rate_8h),
+      funding_interval_hours: parseFloat(g.funding_interval_h || '0'),
+    },
+    phemex: {
+      last_price: parseFloat(p.last_price),
+      mark_price: parseFloat(p.mark_price),
+      index_price: parseFloat(p.index_price),
+      funding_rate_8h: parseFloat(p.funding_rate_8h),
+      funding_interval_hours: parseFloat(p.funding_interval_h || '0'),
+    }
+  };
+}
+
 async function refreshLive() {
   const symbols = PAIR_SYMBOLS[currentPair];
   if (!symbols) return;
   const badge = document.getElementById('liveBadge');
-  try {
-    const [gate, phemex] = await Promise.all([
-      fetchLiveGate(symbols.gate),
-      fetchLivePhemex(symbols.phemex),
-    ]);
-    if (gate && phemex) {
-      renderLatest(gate, phemex);
-      badge.textContent = 'LIVE';
-      badge.className = 'live-badge';
-      const now = new Date().toLocaleTimeString();
-      document.getElementById('status').textContent =
-        `${currentPair} | Live updated: ${now} | Chart refresh: ${CHART_REFRESH_SEC}s`;
-    }
-  } catch (e) {
-    console.warn('Live fetch failed:', e);
+  const now = new Date().toLocaleTimeString();
+
+  // Try live API first
+  const [gate, phemex] = await Promise.all([
+    fetchLiveGate(symbols.gate),
+    fetchLivePhemex(symbols.phemex),
+  ]);
+
+  if (gate && phemex) {
+    renderLatest(gate, phemex);
+    badge.textContent = 'LIVE';
+    badge.className = 'live-badge';
+    document.getElementById('status').textContent =
+      `${currentPair} | LIVE ${now} | Next: ${LIVE_REFRESH_SEC}s`;
+    return;
+  }
+
+  // Fallback: show latest from CSV
+  console.warn('Live API failed, falling back to CSV. gate:', !!gate, 'phemex:', !!phemex);
+  let rows = await fetchCSV(todayStr(), currentPair);
+  if (rows.length === 0) rows = await fetchCSV(yesterdayStr(), currentPair);
+  const csv = latestFromCSV(rows);
+  if (csv) {
+    renderLatest(csv.gate, csv.phemex);
+    badge.textContent = 'CSV';
+    badge.className = 'live-badge error';
+    document.getElementById('status').textContent =
+      `${currentPair} | CSV fallback ${now} | API unavailable`;
+  } else {
     badge.textContent = 'OFFLINE';
     badge.className = 'live-badge error';
+    document.getElementById('status').textContent =
+      `${currentPair} | No data available | ${now}`;
   }
 }
 
