@@ -1,3 +1,4 @@
+import json
 import os
 from datetime import datetime, timezone
 
@@ -19,3 +20,15 @@ def save_ticker(ticker: TickerData, pair_name: str) -> None:
         if write_header:
             f.write(TickerData.csv_header() + "\n")
         f.write(ticker.to_csv_row() + "\n")
+
+
+def save_pairs_json(pairs: list[dict]) -> None:
+    """Write discovered common pairs to data/pairs.json.
+
+    The dashboard reads this file so it does not need to call
+    the exchange APIs itself just to build the symbol list.
+    """
+    os.makedirs(DATA_DIR, exist_ok=True)
+    path = os.path.join(DATA_DIR, "pairs.json")
+    with open(path, "w") as f:
+        json.dump(pairs, f, separators=(",", ":"))

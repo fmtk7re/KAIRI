@@ -96,7 +96,13 @@ const BRANCH = 'main';
 const CHART_REFRESH_SEC = 60;
 const LIVE_REFRESH_SEC = 15;
 
-const CORS_PROXY = 'https://corsproxy.io/?url=';
+// CORS proxy fallback chain – try each in order
+const CORS_PROXIES = [
+  url => 'https://corsproxy.io/?' + encodeURIComponent(url),
+  url => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
+  url => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(url),
+];
+let activeProxyIdx = 0;   // index of current working proxy
 
 // State
 let allPairs = [];          // [{base, gate, phemex}, …]
@@ -133,27 +139,49 @@ function initCharts() {
 // Symbol discovery
 // ======================================================================
 async function proxiedFetch(url) {
-  return fetch(CORS_PROXY + encodeURIComponent(url));
+  // Try from the currently active proxy, then rotate on failure
+  for (let attempt = 0; attempt < CORS_PROXIES.length; attempt++) {
+    const idx = (activeProxyIdx + attempt) % CORS_PROXIES.length;
+    try {
+      const proxyUrl = CORS_PROXIES[idx](url);
+      const r = await fetch(proxyUrl);
+      if (r.ok) {
+        activeProxyIdx = idx; // remember working proxy
+        return r;
+      }
+    } catch { /* try next */ }
+  }
+  // All proxies failed – return a failed Response so callers get null
+  return new Response(null, { status: 502 });
 }
 
-async function discoverSymbols() {
-  // Fetch Gate contracts + Phemex products in parallel
+// ------------------------------------------------------------------
+// Symbol discovery: pairs.json (fast) → API fallback (slow)
+// ------------------------------------------------------------------
+
+async function loadPairsJson() {
+  // GitHub raw – no CORS proxy required
+  const url = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/data/pairs.json?t=${Date.now()}`;
+  const r = await fetch(url);
+  if (!r.ok) throw new Error('pairs.json not found');
+  return await r.json(); // [{name, gate, phemex}, …]
+}
+
+async function discoverFromAPIs() {
   const [gateRes, phemexRes] = await Promise.all([
     proxiedFetch('https://api.gateio.ws/api/v4/futures/usdt/contracts'),
     proxiedFetch('https://api.phemex.com/public/products'),
   ]);
+  if (!gateRes.ok || !phemexRes.ok) throw new Error('API fetch failed');
 
   const gateContracts = await gateRes.json();
   const phemexBody = await phemexRes.json();
   const phemexProducts = (phemexBody.data || phemexBody).perpProductsV2 || [];
 
-  // Build maps: base -> exchange symbol
   const gateMap = {};
   for (const c of gateContracts) {
     const name = c.name || '';
-    if (name.endsWith('_USDT')) {
-      gateMap[name.slice(0, -5)] = name;
-    }
+    if (name.endsWith('_USDT')) gateMap[name.slice(0, -5)] = name;
   }
 
   const phemexMap = {};
@@ -162,19 +190,65 @@ async function discoverSymbols() {
     if (sym.endsWith('USDT')) {
       const base = sym.slice(0, -4);
       phemexMap[base] = sym;
-      // Cache funding interval
       const fi = p.fundingInterval;
       if (fi && fi > 0) phemexFiCache[sym] = fi / 3600;
     }
   }
 
-  // Intersection
-  const commonBases = Object.keys(gateMap).filter(b => phemexMap[b]).sort();
-  allPairs = commonBases.map(base => ({ base, gate: gateMap[base], phemex: phemexMap[base] }));
+  return Object.keys(gateMap)
+    .filter(b => phemexMap[b])
+    .sort()
+    .map(base => ({ name: base, gate: gateMap[base], phemex: phemexMap[base] }));
+}
+
+async function discoverSymbols() {
+  // 1) Try pre-built pairs.json (fast, no proxy)
+  try {
+    const raw = await loadPairsJson();
+    if (raw && raw.length > 0) {
+      applyPairs(raw);
+      console.log(`Loaded ${raw.length} pairs from pairs.json`);
+      // Also fetch Phemex products in background to populate FI cache
+      fetchPhemexFICache();
+      return;
+    }
+  } catch (e) { console.warn('pairs.json unavailable:', e.message); }
+
+  // 2) Fallback: live API discovery via CORS proxy
+  try {
+    const raw = await discoverFromAPIs();
+    if (raw && raw.length > 0) {
+      applyPairs(raw);
+      console.log(`Discovered ${raw.length} pairs from APIs`);
+      return;
+    }
+  } catch (e) { console.warn('API discovery failed:', e.message); }
+
+  // 3) Last resort: hardcoded pairs
+  applyPairs([
+    { name: 'RIVER', gate: 'RIVER_USDT', phemex: 'RIVERUSDT' },
+    { name: 'SENT',  gate: 'SENT_USDT',  phemex: 'SENTUSDT' },
+  ]);
+  console.warn('Using hardcoded fallback pairs');
+}
+
+function applyPairs(raw) {
+  allPairs = raw.map(p => ({ base: p.name, gate: p.gate, phemex: p.phemex }));
   pairMap = {};
   for (const p of allPairs) pairMap[p.base] = p;
+}
 
-  return allPairs;
+async function fetchPhemexFICache() {
+  try {
+    const r = await proxiedFetch('https://api.phemex.com/public/products');
+    if (!r.ok) return;
+    const body = await r.json();
+    const products = (body.data || body).perpProductsV2 || [];
+    for (const p of products) {
+      const fi = p.fundingInterval;
+      if (p.symbol && fi && fi > 0) phemexFiCache[p.symbol] = fi / 3600;
+    }
+  } catch { /* non-critical */ }
 }
 
 // ======================================================================
@@ -516,22 +590,10 @@ async function init() {
   initCharts();
   document.getElementById('status').textContent = 'Discovering symbols…';
 
-  try {
-    await discoverSymbols();
-  } catch (e) {
-    console.error('Symbol discovery failed:', e);
-    // Fallback to hardcoded list
-    allPairs = [
-      { base: 'RIVER', gate: 'RIVER_USDT', phemex: 'RIVERUSDT' },
-      { base: 'SENT',  gate: 'SENT_USDT',  phemex: 'SENTUSDT' },
-    ];
-    pairMap = {};
-    for (const p of allPairs) pairMap[p.base] = p;
-  }
+  await discoverSymbols();
 
   setupSelector();
 
-  // Select first pair
   if (allPairs.length > 0) {
     selectPair(allPairs[0].base);
   }
