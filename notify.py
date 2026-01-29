@@ -40,7 +40,7 @@ def _fr8h_pct(ticker: TickerData) -> str:
     return f"{ticker.funding_rate_8h * 100:.4f}%"
 
 
-def build_gap_message(gate: TickerData, phemex: TickerData) -> str:
+def build_gap_message(gate: TickerData, phemex: TickerData, pair_name: str = "RIVER") -> str:
     """Build a human-readable gap report (Gate - Phemex)."""
     last_gap = _pct_diff(gate.last_price, phemex.last_price)
     mark_gap = _pct_diff(gate.mark_price, phemex.mark_price)
@@ -50,7 +50,7 @@ def build_gap_message(gate: TickerData, phemex: TickerData) -> str:
     ts = gate.timestamp.strftime("%Y-%m-%d %H:%M UTC")
 
     lines = [
-        f"**RIVER Monitor** | {ts}",
+        f"**{pair_name} Monitor** | {ts}",
         "```",
         "[Gate]",
         f" Last:  {gate.last_price}",
