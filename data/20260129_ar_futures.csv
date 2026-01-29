@@ -1,0 +1,5 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-01-29T22:48:41+0000,gate,AR_USDT,3.009,3.01,3.0106,0.0001,8.0,0.00010000
+2026-01-29T22:48:44+0000,phemex,ARUSDT,3.01,3.01,3.01165116,0.0001,8.0,0.00010000
+2026-01-29T22:50:06+0000,gate,AR_USDT,3.012,3.013,3.0134,0.0001,8.0,0.00010000
+2026-01-29T22:50:09+0000,phemex,ARUSDT,3.014,3.014,3.018,0.0001,8.0,0.00010000
