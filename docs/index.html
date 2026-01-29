@@ -3,14 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RIVER Futures Monitor</title>
+<title>Futures Monitor</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { background: #0d1117; color: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', monospace; padding: 16px; }
 h1 { font-size: 1.2em; margin-bottom: 4px; }
-.status { font-size: 0.85em; color: #8b949e; margin-bottom: 16px; }
+.status { font-size: 0.85em; color: #8b949e; margin-bottom: 12px; }
+.tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+.tab { padding: 6px 16px; border: 1px solid #30363d; border-radius: 6px; background: #161b22; color: #8b949e; cursor: pointer; font-size: 0.9em; }
+.tab.active { background: #1f6feb; color: #fff; border-color: #1f6feb; }
 .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .chart-box { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 12px; }
 .chart-box h2 { font-size: 0.9em; margin-bottom: 8px; color: #58a6ff; }
@@ -28,9 +31,10 @@ canvas { width: 100% !important; }
 </style>
 </head>
 <body>
-<h1>RIVER Perpetual Futures Monitor</h1>
+<h1>Perpetual Futures Monitor</h1>
 <div class="status" id="status">Loading...</div>
 
+<div class="tabs" id="tabs"></div>
 <div class="latest" id="latest"></div>
 <div class="charts">
   <div class="chart-box"><h2>Last Price</h2><canvas id="chartLast"></canvas></div>
@@ -43,6 +47,9 @@ canvas { width: 100% !important; }
 const REPO = 'fmtk7re/KAIRI';
 const BRANCH = 'main';
 const REFRESH_SEC = 60;
+const PAIRS = ['RIVER', 'SENT'];
+
+let currentPair = PAIRS[0];
 
 const CHART_COLORS = { gate: '#58a6ff', phemex: '#f0883e', gap: '#a371f7' };
 const CHART_OPTS = {
@@ -66,6 +73,20 @@ function initCharts() {
   });
 }
 
+function renderTabs() {
+  const container = document.getElementById('tabs');
+  container.innerHTML = PAIRS.map(p =>
+    `<div class="tab ${p === currentPair ? 'active' : ''}" data-pair="${p}">${p}</div>`
+  ).join('');
+  container.querySelectorAll('.tab').forEach(el => {
+    el.addEventListener('click', () => {
+      currentPair = el.dataset.pair;
+      renderTabs();
+      refresh();
+    });
+  });
+}
+
 function todayStr() {
   const d = new Date();
   return d.getUTCFullYear().toString() +
@@ -80,8 +101,8 @@ function yesterdayStr() {
     d.getUTCDate().toString().padStart(2,'0');
 }
 
-async function fetchCSV(dateStr) {
-  const url = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/data/${dateStr}_river_futures.csv?t=${Date.now()}`;
+async function fetchCSV(dateStr, pair) {
+  const url = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/data/${dateStr}_${pair.toLowerCase()}_futures.csv?t=${Date.now()}`;
   try {
     const r = await fetch(url);
     if (!r.ok) return [];
@@ -192,21 +213,24 @@ function updateLatest(gate, phemex) {
 }
 
 async function refresh() {
-  const rows = await fetchCSV(todayStr());
+  const rows = await fetchCSV(todayStr(), currentPair);
   let allRows = rows;
   if (rows.length === 0) {
-    allRows = await fetchCSV(yesterdayStr());
+    allRows = await fetchCSV(yesterdayStr(), currentPair);
   }
   if (allRows.length === 0) {
-    document.getElementById('status').textContent = 'No data available yet. Waiting for first collection...';
+    document.getElementById('status').textContent = `No data for ${currentPair} yet. Waiting for first collection...`;
+    document.getElementById('latest').innerHTML = '';
+    Object.values(charts).forEach(c => { c.data.datasets = []; c.update(); });
     return;
   }
   updateCharts(allRows);
   const now = new Date().toLocaleTimeString();
-  document.getElementById('status').textContent = `${allRows.length} data points | Last refresh: ${now} | Auto-refresh: ${REFRESH_SEC}s`;
+  document.getElementById('status').textContent = `${currentPair} | ${allRows.length} data points | Last refresh: ${now} | Auto-refresh: ${REFRESH_SEC}s`;
 }
 
 initCharts();
+renderTabs();
 refresh();
 setInterval(refresh, REFRESH_SEC * 1000);
 </script>

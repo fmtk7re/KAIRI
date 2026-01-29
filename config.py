@@ -1,9 +1,9 @@
 import os
 
-SYMBOLS = {
-    "gate": "RIVER_USDT",
-    "phemex": "RIVERUSDT",
-}
+PAIRS = [
+    {"name": "RIVER", "gate": "RIVER_USDT", "phemex": "RIVERUSDT"},
+    {"name": "SENT", "gate": "SENT_USDT", "phemex": "SENTUSDT"},
+]
 
 FETCH_INTERVAL_SECONDS = 60
 
