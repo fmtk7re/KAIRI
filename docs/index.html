@@ -57,7 +57,9 @@ canvas { width: 100% !important; }
 .neg { color: #f85149; }
 .live-badge { display: inline-block; background: #238636; color: #fff; font-size: 0.7em; padding: 2px 6px; border-radius: 4px; margin-left: 6px; vertical-align: middle; }
 .live-badge.error { background: #da3633; }
-.loading-msg { text-align: center; padding: 40px; color: #8b949e; font-size: 1.1em; }
+.live-badge.warn { background: #9e6a03; }
+.chart-status { font-size: 0.75em; color: #8b949e; margin-bottom: 8px; }
+.chart-status.stale { color: #d29922; }
 
 @media (max-width: 900px) {
   .charts { grid-template-columns: 1fr; }
@@ -80,6 +82,7 @@ canvas { width: 100% !important; }
 </div>
 
 <div class="latest" id="latest"></div>
+<div class="chart-status" id="chartStatus"></div>
 <div class="charts">
   <div class="chart-box"><h2>Last Price</h2><canvas id="chartLast"></canvas></div>
   <div class="chart-box"><h2>Price Gap (Last %)</h2><canvas id="chartGap"></canvas></div>
@@ -95,6 +98,7 @@ const REPO = 'fmtk7re/KAIRI';
 const BRANCH = 'main';
 const CHART_REFRESH_SEC = 60;
 const LIVE_REFRESH_SEC = 15;
+const LS_KEY = 'kairi_selected_pair';
 
 // CORS proxy fallback chain – try each in order
 const CORS_PROXIES = [
@@ -102,14 +106,14 @@ const CORS_PROXIES = [
   url => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
   url => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(url),
 ];
-let activeProxyIdx = 0;   // index of current working proxy
+let activeProxyIdx = 0;
 
 // State
-let allPairs = [];          // [{base, gate, phemex}, …]
-let pairMap = {};           // base -> {gate, phemex}
-let currentPair = '';       // selected base name
-let phemexFiCache = {};     // phemex symbol -> funding interval hours
-let hlIndex = -1;           // dropdown highlight index
+let allPairs = [];
+let pairMap = {};
+let currentPair = '';
+let phemexFiCache = {};
+let hlIndex = -1;
 
 // ======================================================================
 // Charts
@@ -136,35 +140,31 @@ function initCharts() {
 }
 
 // ======================================================================
-// Symbol discovery
+// CORS proxy with fallback
 // ======================================================================
 async function proxiedFetch(url) {
-  // Try from the currently active proxy, then rotate on failure
   for (let attempt = 0; attempt < CORS_PROXIES.length; attempt++) {
     const idx = (activeProxyIdx + attempt) % CORS_PROXIES.length;
     try {
       const proxyUrl = CORS_PROXIES[idx](url);
       const r = await fetch(proxyUrl);
       if (r.ok) {
-        activeProxyIdx = idx; // remember working proxy
+        activeProxyIdx = idx;
         return r;
       }
     } catch { /* try next */ }
   }
-  // All proxies failed – return a failed Response so callers get null
   return new Response(null, { status: 502 });
 }
 
-// ------------------------------------------------------------------
-// Symbol discovery: pairs.json (fast) → API fallback (slow)
-// ------------------------------------------------------------------
-
+// ======================================================================
+// Symbol discovery: pairs.json → API → hardcoded
+// ======================================================================
 async function loadPairsJson() {
-  // GitHub raw – no CORS proxy required
   const url = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/data/pairs.json?t=${Date.now()}`;
   const r = await fetch(url);
   if (!r.ok) throw new Error('pairs.json not found');
-  return await r.json(); // [{name, gate, phemex}, …]
+  return await r.json();
 }
 
 async function discoverFromAPIs() {
@@ -202,19 +202,16 @@ async function discoverFromAPIs() {
 }
 
 async function discoverSymbols() {
-  // 1) Try pre-built pairs.json (fast, no proxy)
   try {
     const raw = await loadPairsJson();
     if (raw && raw.length > 0) {
       applyPairs(raw);
       console.log(`Loaded ${raw.length} pairs from pairs.json`);
-      // Also fetch Phemex products in background to populate FI cache
       fetchPhemexFICache();
       return;
     }
   } catch (e) { console.warn('pairs.json unavailable:', e.message); }
 
-  // 2) Fallback: live API discovery via CORS proxy
   try {
     const raw = await discoverFromAPIs();
     if (raw && raw.length > 0) {
@@ -224,7 +221,6 @@ async function discoverSymbols() {
     }
   } catch (e) { console.warn('API discovery failed:', e.message); }
 
-  // 3) Last resort: hardcoded pairs
   applyPairs([
     { name: 'RIVER', gate: 'RIVER_USDT', phemex: 'RIVERUSDT' },
     { name: 'SENT',  gate: 'SENT_USDT',  phemex: 'SENTUSDT' },
@@ -274,7 +270,6 @@ function renderDropdown(filter = '') {
   ).join('');
   dd.classList.add('show');
 
-  // Click handler
   dd.querySelectorAll('.item').forEach(el => {
     el.addEventListener('click', () => selectPair(el.dataset.base));
   });
@@ -289,6 +284,7 @@ function selectPair(base) {
   document.getElementById('symbolSearch').value = '';
   document.getElementById('dropdown').classList.remove('show');
   hlIndex = -1;
+  try { localStorage.setItem(LS_KEY, base); } catch {}
   refreshLive();
   refreshCharts();
 }
@@ -335,14 +331,12 @@ function setupSelector() {
     }
   });
 
-  // Close dropdown when clicking outside
   document.addEventListener('click', (e) => {
     if (!document.getElementById('selectorWrap').contains(e.target)) {
       dd.classList.remove('show');
     }
   });
 
-  // Clicking the box focuses the input
   box.addEventListener('click', () => input.focus());
 }
 
@@ -354,8 +348,15 @@ function updateHighlight(items) {
 }
 
 // ======================================================================
-// CSV helpers
+// Helpers
 // ======================================================================
+function fmtPrice(v) {
+  if (v >= 1000) return v.toFixed(2);
+  if (v >= 1)    return v.toFixed(4);
+  if (v >= 0.01) return v.toFixed(6);
+  return v.toFixed(8);
+}
+
 function todayStr() {
   const d = new Date();
   return d.getUTCFullYear().toString() +
@@ -447,11 +448,11 @@ function renderLatest(gate, phemex) {
   document.getElementById('latest').innerHTML = `
     <div class="card">
       <h3>Last Price</h3>
-      <div>Gate: <span class="val">${gLast.toFixed(4)}</span></div>
-      <div>Phemex: <span class="val">${pLast.toFixed(4)}</span></div>
+      <div>Gate: <span class="val">${fmtPrice(gLast)}</span></div>
+      <div>Phemex: <span class="val">${fmtPrice(pLast)}</span></div>
     </div>
     <div class="card">
-      <h3>Price Gap (Gate − Phemex)</h3>
+      <h3>Price Gap (Gate - Phemex)</h3>
       <div class="val ${cls(gap)}">${sign(gap)}${gap.toFixed(4)}%</div>
     </div>
     <div class="card">
@@ -567,6 +568,34 @@ function updateCharts(rows) {
   ];
   charts.chartFRGap.options.scales.y.ticks.callback = v => v.toFixed(2) + '%';
   charts.chartFRGap.update();
+
+  // Show data staleness info
+  updateChartStatus(rows);
+}
+
+function updateChartStatus(rows) {
+  const el = document.getElementById('chartStatus');
+  if (!rows || rows.length === 0) {
+    el.textContent = '';
+    el.className = 'chart-status';
+    return;
+  }
+  const timestamps = rows.map(r => new Date(r.timestamp)).filter(d => !isNaN(d));
+  if (timestamps.length === 0) { el.textContent = ''; return; }
+  const last = new Date(Math.max(...timestamps));
+  const first = new Date(Math.min(...timestamps));
+  const ageMin = Math.round((Date.now() - last.getTime()) / 60000);
+  const fmt = d => d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const points = Math.floor(rows.length / 2);
+
+  let text = `Chart: ${fmt(first)} – ${fmt(last)} (${points} pts)`;
+  if (ageMin > 15) {
+    text += ` | Data is ${ageMin}min old`;
+    el.className = 'chart-status stale';
+  } else {
+    el.className = 'chart-status';
+  }
+  el.textContent = text;
 }
 
 async function refreshCharts() {
@@ -575,6 +604,7 @@ async function refreshCharts() {
   if (rows.length === 0) rows = await fetchCSV(yesterdayStr(), currentPair);
   if (rows.length === 0) {
     Object.values(charts).forEach(c => { c.data.datasets = []; c.update(); });
+    updateChartStatus([]);
     return;
   }
   updateCharts(rows);
@@ -594,9 +624,13 @@ async function init() {
 
   setupSelector();
 
-  if (allPairs.length > 0) {
-    selectPair(allPairs[0].base);
-  }
+  // Restore last selected pair from localStorage, or pick first
+  let initial = allPairs.length > 0 ? allPairs[0].base : '';
+  try {
+    const saved = localStorage.getItem(LS_KEY);
+    if (saved && pairMap[saved]) initial = saved;
+  } catch {}
+  if (initial) selectPair(initial);
 
   liveTimer = setInterval(refreshLive, LIVE_REFRESH_SEC * 1000);
   chartTimer = setInterval(refreshCharts, CHART_REFRESH_SEC * 1000);

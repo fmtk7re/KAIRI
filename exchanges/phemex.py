@@ -14,7 +14,9 @@ logger = logging.getLogger(__name__)
 BASE_URL = "https://api.phemex.com"
 
 # Max parallel requests when bulk-fetching individual tickers
-_BULK_WORKERS = 10
+_BULK_WORKERS = 20
+# Per-request timeout (shorter than global to avoid blocking threads)
+_TICKER_TIMEOUT = 8
 
 
 class PhemexExchange(BaseExchange):
@@ -49,50 +51,25 @@ class PhemexExchange(BaseExchange):
             if sym and fi and fi > 0:
                 self._fi_cache[sym] = fi / 3600.0
 
-    def _fetch_funding_interval(self, symbol: str) -> float:
-        """Fetch funding interval from /public/products endpoint."""
-        if symbol in self._fi_cache:
-            return self._fi_cache[symbol]
-
-        url = f"{BASE_URL}/public/products"
-        resp = requests.get(url, timeout=REQUEST_TIMEOUT_SECONDS)
-        resp.raise_for_status()
-        body = resp.json()
-
-        data = body.get("data", body)
-        for product in data.get("perpProductsV2", []):
-            if product.get("symbol") == symbol:
-                fi_seconds = product.get("fundingInterval", 0)
-                if fi_seconds and fi_seconds > 0:
-                    fi_hours = fi_seconds / 3600.0
-                    self._fi_cache[symbol] = fi_hours
-                    logger.info(
-                        "Phemex %s funding interval: %ds (%.1fh)",
-                        symbol, fi_seconds, fi_hours,
-                    )
-                    return fi_hours
-
-        raise ValueError(
-            f"Phemex API did not return fundingInterval for {symbol}"
-        )
+    def _get_funding_interval(self, symbol: str) -> float:
+        """Return cached funding interval.  Default 4h if unknown."""
+        return self._fi_cache.get(symbol, 4.0)
 
     # ------------------------------------------------------------------
-    # Single-symbol fetch (original)
+    # Single-symbol fetch
     # ------------------------------------------------------------------
 
     def fetch_ticker(self, symbol: str) -> TickerData:
-        fi_hours = self._fetch_funding_interval(symbol)
+        fi_hours = self._get_funding_interval(symbol)
 
         url = f"{BASE_URL}/md/v2/ticker/24hr"
         params = {"symbol": symbol}
-        resp = requests.get(url, params=params, timeout=REQUEST_TIMEOUT_SECONDS)
+        resp = requests.get(url, params=params, timeout=_TICKER_TIMEOUT)
         resp.raise_for_status()
         body = resp.json()
 
         if body.get("error") is not None:
-            raise ValueError(
-                f"Phemex API error: {body.get('error')}"
-            )
+            raise ValueError(f"Phemex API error: {body.get('error')}")
 
         data = body.get("result", {})
 

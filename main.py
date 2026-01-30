@@ -10,7 +10,6 @@ import config
 from discover import discover_common_pairs
 from exchanges.gate import GateExchange
 from exchanges.phemex import PhemexExchange
-from notify import build_gap_message, send_discord
 from storage import save_pairs_json, save_ticker
 
 logging.basicConfig(
@@ -32,11 +31,15 @@ EXCHANGES = {
 
 def fetch_all_bulk() -> None:
     """Bulk-fetch every common pair (Gate: 1 call, Phemex: threaded)."""
+    t0 = time.monotonic()
+
     try:
         gate_tickers = EXCHANGES["gate"].fetch_all_tickers()
     except Exception:
         logger.exception("Gate bulk fetch failed")
         gate_tickers = {}
+
+    t1 = time.monotonic()
 
     try:
         phemex_tickers = EXCHANGES["phemex"].fetch_all_tickers()
@@ -44,24 +47,35 @@ def fetch_all_bulk() -> None:
         logger.exception("Phemex bulk fetch failed")
         phemex_tickers = {}
 
-    common = sorted(set(gate_tickers) & set(phemex_tickers))
-    logger.info("Saving %d common pairs", len(common))
+    t2 = time.monotonic()
 
+    common = sorted(set(gate_tickers) & set(phemex_tickers))
+
+    saved = 0
     for base in common:
         gt = gate_tickers[base]
         pt = phemex_tickers[base]
         try:
             save_ticker(gt, base)
             save_ticker(pt, base)
+            saved += 1
         except Exception:
             logger.exception("Failed to save %s", base)
+
+    t3 = time.monotonic()
+    logger.info(
+        "Cycle done: gate=%.1fs phemex=%.1fs save=%.1fs | "
+        "gate=%d phemex=%d common=%d saved=%d | total=%.1fs",
+        t1 - t0, t2 - t1, t3 - t2,
+        len(gate_tickers), len(phemex_tickers), len(common), saved,
+        t3 - t0,
+    )
 
 
 def fetch_all_static() -> None:
     """Original per-pair fetch using the static PAIRS list."""
     for pair in config.PAIRS:
         pair_name = pair["name"]
-        tickers = {}
         for ex_name, ex in EXCHANGES.items():
             symbol = pair.get(ex_name, "")
             if not symbol:
@@ -69,34 +83,23 @@ def fetch_all_static() -> None:
             try:
                 ticker = ex.fetch_ticker(symbol)
                 save_ticker(ticker, pair_name)
-                tickers[ex_name] = ticker
                 logger.info(
-                    "%s %s | last=%s mark=%s index=%s fr=%s (intv=%gh, fr8h=%.8f)",
-                    ticker.exchange,
-                    ticker.symbol,
-                    ticker.last_price,
-                    ticker.mark_price,
-                    ticker.index_price,
-                    ticker.funding_rate,
-                    ticker.funding_interval_hours,
-                    ticker.funding_rate_8h,
+                    "%s %s | last=%s fr8h=%.8f",
+                    ticker.exchange, ticker.symbol,
+                    ticker.last_price, ticker.funding_rate_8h,
                 )
             except Exception:
                 logger.exception("Failed to fetch %s from %s", pair_name, ex_name)
 
-        gate = tickers.get("gate")
-        phemex = tickers.get("phemex")
-        if gate and phemex:
-            message = build_gap_message(gate, phemex, pair_name)
-            logger.info("Gap report [%s]:\n%s", pair_name, message)
-            send_discord(message)
-
 
 def fetch_all() -> None:
-    if config.DISCOVER_ALL:
-        fetch_all_bulk()
-    else:
-        fetch_all_static()
+    try:
+        if config.DISCOVER_ALL:
+            fetch_all_bulk()
+        else:
+            fetch_all_static()
+    except Exception:
+        logger.exception("fetch_all() crashed – will retry next cycle")
 
 
 # ------------------------------------------------------------------
@@ -117,10 +120,16 @@ def main() -> None:
     signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
 
     if config.DISCOVER_ALL:
-        pairs = discover_common_pairs()
-        save_pairs_json(pairs)
+        try:
+            pairs = discover_common_pairs()
+            save_pairs_json(pairs)
+        except Exception:
+            logger.exception(
+                "Symbol discovery failed – falling back to static PAIRS"
+            )
+            pairs = config.PAIRS
         logger.info(
-            "DISCOVER_ALL mode: %d common pairs found (interval=%ds, duration=%s)",
+            "DISCOVER_ALL mode: %d pairs (interval=%ds, duration=%s)",
             len(pairs),
             config.FETCH_INTERVAL_SECONDS,
             f"{args.duration}s" if args.duration else "unlimited",
@@ -134,7 +143,7 @@ def main() -> None:
             f"{args.duration}s" if args.duration else "unlimited",
         )
 
-    # Run once immediately at startup
+    # Run once immediately (crash-proof)
     fetch_all()
 
     schedule.every(config.FETCH_INTERVAL_SECONDS).seconds.do(fetch_all)

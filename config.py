@@ -16,5 +16,5 @@ REQUEST_TIMEOUT_SECONDS = 10
 
 DATA_DIR = "data"
 
-# Discord webhook URL (set via environment variable DISCORD_WEBHOOK_URL)
-DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL", "")
+# Discord notifications (disabled – set a URL to re-enable)
+DISCORD_WEBHOOK_URL = ""
