@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-02-01T00:16:19+0000,gate,RENDER_USDT,1.593,1.593,1.5936,-0.000016,4.0,-0.00003200
+2026-02-01T00:16:25+0000,phemex,RENDERUSDT,1.594,1.594,1.59666667,-0.00074545,8.0,-0.00074545
