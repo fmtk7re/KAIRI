@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-02-01T00:03:13+0000,gate,BARD_USDT,0.6567,0.6579,0.65701,0.001462,1.0,0.01169600
+2026-02-01T00:03:24+0000,phemex,BARDUSDT,0.656,0.6574,0.658083,-0.00523486,4.0,-0.01046972

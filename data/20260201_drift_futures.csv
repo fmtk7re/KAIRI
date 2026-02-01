@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-02-01T00:00:45+0000,gate,DRIFT_USDT,0.1068,0.1069,0.1071,0.00005,4.0,0.00010000
+2026-02-01T00:00:52+0000,phemex,DRIFTUSDT,0.1069,0.1069,0.10700061,0.0001,8.0,0.00010000

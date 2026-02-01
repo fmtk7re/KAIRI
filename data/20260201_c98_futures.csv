@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-02-01T00:01:59+0000,gate,C98_USDT,0.02974,0.02964,0.02996,-0.011138,8.0,-0.01113800
+2026-02-01T00:02:01+0000,phemex,C98USDT,0.0288,0.0298,0.03024,-0.02408718,8.0,-0.02408718
