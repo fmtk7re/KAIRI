@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-02-01T00:12:17+0000,gate,FIGHT_USDT,0.006869,0.006869,0.006893,-0.00117,4.0,-0.00234000
+2026-02-01T00:12:30+0000,phemex,FIGHTUSDT,0.006854,0.006864,0.0068825,-0.00175706,4.0,-0.00351412
