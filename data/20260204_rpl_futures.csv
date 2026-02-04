@@ -1,0 +1,5 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-02-04T02:07:05+0000,gate,RPL_USDT,1.79,1.79,1.791,0.000012,1.0,0.00009600
+2026-02-04T02:07:09+0000,phemex,RPLUSDT,1.784,1.787,1.7886,0.0001,8.0,0.00010000
+2026-02-04T02:08:25+0000,gate,RPL_USDT,1.79,1.79,1.791,0.000012,1.0,0.00009600
+2026-02-04T02:08:28+0000,phemex,RPLUSDT,1.789,1.788,1.7885,0.0001,8.0,0.00010000
