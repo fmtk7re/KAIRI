@@ -1,0 +1,5 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-02-05T02:08:12+0000,gate,GAS_USDT,1.841,1.845,1.851,-0.000219,4.0,-0.00043800
+2026-02-05T02:08:17+0000,phemex,GASUSDT,1.841,1.843,1.8535,0.00005,4.0,0.00010000
+2026-02-05T02:09:28+0000,gate,GAS_USDT,1.847,1.852,1.859,-0.000226,4.0,-0.00045200
+2026-02-05T02:09:32+0000,phemex,GASUSDT,1.846,1.848,1.8582,0.00005,4.0,0.00010000
