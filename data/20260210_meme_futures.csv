@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-02-10T00:16:32+0000,gate,MEME_USDT,0.000713,0.000713,0.0007138,-0.000352,4.0,-0.00070400
+2026-02-10T00:16:37+0000,phemex,MEMEUSDT,0.000715,0.000713,0.00071384,0.0001,8.0,0.00010000

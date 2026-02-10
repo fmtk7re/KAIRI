@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-02-10T00:16:32+0000,gate,NEO_USDT,2.704,2.703,2.7098,-0.000663,8.0,-0.00066300
+2026-02-10T00:16:33+0000,phemex,NEOUSDT,2.705,2.705,2.70919753,-0.0004987,8.0,-0.00049870
