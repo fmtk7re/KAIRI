@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-02-12T00:00:31+0000,gate,DYM_USDT,0.0551,0.0547,0.0546,-0.014012,4.0,-0.02802400
+2026-02-12T00:00:36+0000,phemex,DYMUSDT,0.0545,0.0551,0.05575758,-0.01172281,8.0,-0.01172281

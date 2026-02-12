@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-02-12T00:00:31+0000,gate,BERA_USDT,0.926,0.925,0.9269,-0.014573,4.0,-0.02914600
+2026-02-12T00:00:39+0000,phemex,BERAUSDT,0.933,0.932,0.92012,-0.01932181,4.0,-0.03864362
