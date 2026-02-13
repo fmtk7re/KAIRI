@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-02-13T00:01:04+0000,gate,XAN_USDT,0.00803,0.00804,0.008045,0.00005,4.0,0.00010000
+2026-02-13T00:01:14+0000,phemex,XANUSDT,0.00803,0.00803,0.0080309,0.00005,4.0,0.00010000

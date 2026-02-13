@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-02-13T00:01:04+0000,gate,ICNT_USDT,0.4606,0.4606,0.46374,0.0001,8.0,0.00010000
+2026-02-13T00:01:13+0000,phemex,ICNTUSDT,0.4612,0.4612,0.463379,0.00005,4.0,0.00010000
