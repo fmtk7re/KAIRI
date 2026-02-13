@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-02-13T00:11:18+0000,gate,LPT_USDT,2.582,2.623,2.8074,-0.02,8.0,-0.02000000
 2026-02-13T00:11:21+0000,phemex,LPTUSDT,2.58,2.641,2.75354817,-0.03,4.0,-0.06000000
+2026-02-13T00:30:34+0000,gate,LPT_USDT,2.576,2.578,2.72,-0.02,8.0,-0.02000000
+2026-02-13T00:30:37+0000,phemex,LPTUSDT,2.63,2.63,2.70614516,-0.03,4.0,-0.06000000
