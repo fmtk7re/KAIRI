@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-02-13T00:11:18+0000,gate,MOODENG_USDT,0.05184,0.0517,0.05221,-0.010253,4.0,-0.02050600
+2026-02-13T00:11:24+0000,phemex,MOODENGUSDT,0.0516,0.0516,0.052093,-0.00848961,4.0,-0.01697922

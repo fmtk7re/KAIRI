@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-02-13T00:11:18+0000,gate,DOGE_USDT,0.09283,0.09283,0.092892,0.000058,8.0,0.00005800
+2026-02-13T00:11:18+0000,phemex,DOGEUSDT,0.09286,0.09286,0.09287092,0.0001,8.0,0.00010000
