@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-02-25T00:01:32+0000,gate,BNB_USDT,583.5,583.5,583.8933,-0.000185,8.0,-0.00018500
+2026-02-25T00:01:33+0000,phemex,BNBUSDT,583.71,583.71,583.84241758,0,8.0,0.00000000
