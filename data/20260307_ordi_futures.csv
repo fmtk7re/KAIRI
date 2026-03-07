@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-03-07T00:37:30+0000,gate,ORDI_USDT,2.421,2.422,2.4226,0.00005,4.0,0.00010000
+2026-03-07T00:37:34+0000,phemex,ORDIUSDT,2.42,2.422,2.42327273,0.0001,8.0,0.00010000

@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-03-07T00:37:30+0000,gate,RUNE_USDT,0.423,0.4236,0.424,0.0001,8.0,0.00010000
+2026-03-07T00:37:32+0000,phemex,RUNEUSDT,0.424,0.424,0.42401667,0.0001,8.0,0.00010000
