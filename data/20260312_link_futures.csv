@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-03-12T00:06:32+0000,gate,LINK_USDT,8.985,8.984,8.986,-0.00001,8.0,-0.00001000
+2026-03-12T00:06:32+0000,phemex,LINKUSDT,8.984,8.986,8.98993762,0.0001,8.0,0.00010000
