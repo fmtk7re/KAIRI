@@ -1,0 +1,5 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-03-16T00:07:14+0000,gate,XVS_USDT,3.109,3.117,3.1207,-0.000012,8.0,-0.00001200
+2026-03-16T00:07:19+0000,phemex,XVSUSDT,3.123,3.12,3.12012,0.0001,8.0,0.00010000
+2026-03-16T00:08:31+0000,gate,XVS_USDT,3.109,3.109,3.1158,-0.000135,8.0,-0.00013500
+2026-03-16T00:08:36+0000,phemex,XVSUSDT,3.11,3.117,3.118764,-0.000052,8.0,-0.00005200
