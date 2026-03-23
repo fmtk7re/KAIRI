@@ -1,0 +1,5 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-03-23T08:34:11+0000,gate,NG_USDT,3.129,3.128,3.1226,0.001322,8.0,0.00132200
+2026-03-23T08:34:25+0000,phemex,NGUSDT,3.133,3.133,3.132,0,8.0,0.00000000
+2026-03-23T08:35:28+0000,gate,NG_USDT,3.131,3.129,3.1216,0.001383,8.0,0.00138300
+2026-03-23T08:35:43+0000,phemex,NGUSDT,3.132,3.132,3.132,0,8.0,0.00000000
