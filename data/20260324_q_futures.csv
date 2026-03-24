@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-03-24T00:26:26+0000,gate,Q_USDT,0.012979,0.01297,0.01297,0.00005,4.0,0.00010000
+2026-03-24T00:26:36+0000,phemex,QUSDT,0.012998,0.012998,0.01296808,0.00038541,4.0,0.00077082
