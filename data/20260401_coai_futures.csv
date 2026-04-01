@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-04-01T00:09:17+0000,gate,COAI_USDT,0.2704,0.27,0.26983,0.0001,8.0,0.00010000
+2026-04-01T00:09:27+0000,phemex,COAIUSDT,0.2711,0.27,0.27004,0.00005,4.0,0.00010000
