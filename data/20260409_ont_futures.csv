@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-04-09T00:05:30+0000,gate,ONT_USDT,0.0793,0.07904,0.0792,-0.002189,1.0,-0.01751200
+2026-04-09T00:05:33+0000,phemex,ONTUSDT,0.0788,0.0796,0.08020106,-0.00514327,4.0,-0.01028654

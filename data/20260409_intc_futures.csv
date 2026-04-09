@@ -1,0 +1,5 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-04-09T00:04:14+0000,gate,INTC_USDT,58.09,58.09,58.117,0,8.0,0.00000000
+2026-04-09T00:04:27+0000,phemex,INTCUSDT,58.2,58.11,58.09764706,0,8.0,0.00000000
+2026-04-09T00:05:30+0000,gate,INTC_USDT,58.06,58.06,58.066,0,8.0,0.00000000
+2026-04-09T00:05:44+0000,phemex,INTCUSDT,58.07,58.07,58.05,0,8.0,0.00000000
