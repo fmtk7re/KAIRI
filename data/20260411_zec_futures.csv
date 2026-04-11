@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-04-11T00:42:30+0000,gate,ZEC_USDT,374.36,374.56,374.729,-0.000031,8.0,-0.00003100
+2026-04-11T00:42:32+0000,phemex,ZECUSDT,374.33,374.33,374.5761,0.0001,8.0,0.00010000

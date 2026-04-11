@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-04-11T00:42:30+0000,gate,IP_USDT,0.505,0.505,0.5057,-0.000105,8.0,-0.00010500
+2026-04-11T00:42:37+0000,phemex,IPUSDT,0.5048,0.5048,0.505616,-0.00050392,4.0,-0.00100784

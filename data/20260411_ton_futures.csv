@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-04-11T00:42:30+0000,gate,TON_USDT,1.3218,1.322,1.3229,0.000023,4.0,0.00004600
+2026-04-11T00:42:35+0000,phemex,TONUSDT,1.3219,1.3219,1.32257685,-0.00007005,8.0,-0.00007005

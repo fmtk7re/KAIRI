@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-04-11T00:42:30+0000,gate,WLD_USDT,0.2771,0.2772,0.2774,0.0001,8.0,0.00010000
+2026-04-11T00:42:34+0000,phemex,WLDUSDT,0.2772,0.2773,0.27753333,0.00007912,8.0,0.00007912
