@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-04-15T00:52:19+0000,gate,TRUMP_USDT,2.79,2.79,2.7918,-0.000552,4.0,-0.00110400
+2026-04-15T00:52:28+0000,phemex,TRUMPUSDT,2.789,2.789,2.7923,-0.00105466,4.0,-0.00210932

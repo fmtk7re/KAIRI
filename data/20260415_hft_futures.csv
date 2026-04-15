@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-04-15T00:52:19+0000,gate,HFT_USDT,0.01305,0.01306,0.01308,0.0001,8.0,0.00010000
+2026-04-15T00:52:23+0000,phemex,HFTUSDT,0.01306,0.01306,0.01301383,0.0001,8.0,0.00010000
