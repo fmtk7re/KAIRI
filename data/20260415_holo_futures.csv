@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-04-15T00:12:29+0000,gate,HOLO_USDT,0.06113,0.06113,0.06164,-0.007687,4.0,-0.01537400
+2026-04-15T00:12:38+0000,phemex,HOLOUSDT,0.06114,0.06114,0.061734,-0.00817252,4.0,-0.01634504

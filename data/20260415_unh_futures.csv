@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-04-15T00:03:28+0000,gate,UNH_USDT,315.74,315.75,316.154,0,8.0,0.00000000
 2026-04-15T00:03:39+0000,phemex,UNHUSDT,313.99,315.79,315.794,0,4.0,0.00000000
+2026-04-15T00:12:29+0000,gate,UNH_USDT,315.77,315.78,316.048,0,8.0,0.00000000
+2026-04-15T00:12:40+0000,phemex,UNHUSDT,313.93,315.77,315.773,0,4.0,0.00000000
