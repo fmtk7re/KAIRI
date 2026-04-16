@@ -1,0 +1,5 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-04-16T00:03:12+0000,gate,BABA_USDT,134.17,134.16,134.09,0,8.0,0.00000000
+2026-04-16T00:03:24+0000,phemex,BABAUSDT,134.1,134.1,133.941,0,4.0,0.00000000
+2026-04-16T00:04:27+0000,gate,BABA_USDT,134.38,134.27,134.18,0,8.0,0.00000000
+2026-04-16T00:04:39+0000,phemex,BABAUSDT,134.1,134.1,133.965,0,4.0,0.00000000
