@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-04-18T00:03:33+0000,gate,SOL_USDT,88.84,88.83,88.882,-0.000017,8.0,-0.00001700
+2026-04-18T00:03:34+0000,phemex,SOLUSDT,88.84,88.84,88.88136384,0.00001089,8.0,0.00001089

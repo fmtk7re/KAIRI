@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-04-18T00:03:33+0000,gate,HIGH_USDT,0.1582,0.1577,0.1575,-0.006384,8.0,-0.00638400
+2026-04-18T00:03:37+0000,phemex,HIGHUSDT,0.1571,0.1571,0.15883684,-0.01506323,8.0,-0.01506323
