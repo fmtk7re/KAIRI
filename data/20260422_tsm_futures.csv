@@ -1,0 +1,5 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-04-22T00:01:21+0000,gate,TSM_USDT,369.41,369.39,369.336,0,8.0,0.00000000
+2026-04-22T00:01:36+0000,phemex,TSMUSDT,369.62,369.74,369.748,0,8.0,0.00000000
+2026-04-22T00:02:38+0000,gate,TSM_USDT,369.36,369.36,369.338,0,8.0,0.00000000
+2026-04-22T00:02:53+0000,phemex,TSMUSDT,370.2,370.14,370.065,0,8.0,0.00000000

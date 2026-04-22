@@ -1,0 +1,5 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-04-22T00:01:21+0000,gate,EWJ_USDT,88.09,88.13,88.125,0.0001,8.0,0.00010000
+2026-04-22T00:01:35+0000,phemex,EWJUSDT,87.98,88.07,88.0795,0,8.0,0.00000000
+2026-04-22T00:02:38+0000,gate,EWJ_USDT,88.08,88.08,88,0.0001,8.0,0.00010000
+2026-04-22T00:02:53+0000,phemex,EWJUSDT,87.98,88.22,88.2215,0,8.0,0.00000000
