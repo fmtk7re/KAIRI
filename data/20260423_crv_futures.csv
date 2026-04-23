@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-04-23T00:32:20+0000,gate,CRV_USDT,0.227,0.2272,0.2273,0.0001,8.0,0.00010000
+2026-04-23T00:32:21+0000,phemex,CRVUSDT,0.227,0.227,0.22733882,-0.00021818,8.0,-0.00021818
