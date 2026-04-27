@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-04-27T00:43:17+0000,gate,CHZ_USDT,0.04977,0.04983,0.04984,0.0001,8.0,0.00010000
+2026-04-27T00:43:18+0000,phemex,CHZUSDT,0.0498,0.0498,0.04985265,0.0001,8.0,0.00010000
