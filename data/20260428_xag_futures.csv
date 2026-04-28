@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-04-28T00:00:14+0000,gate,XAG_USDT,75.98,75.96,75.95,0,4.0,0.00000000
 2026-04-28T00:00:24+0000,phemex,XAGUSDT,76,76,75.995,0,4.0,0.00000000
+2026-04-28T00:51:21+0000,gate,XAG_USDT,76.01,75.99,75.96,0,4.0,0.00000000
+2026-04-28T00:51:32+0000,phemex,XAGUSDT,75.98,75.98,75.975,0,4.0,0.00000000
