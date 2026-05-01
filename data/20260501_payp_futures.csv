@@ -1,0 +1,5 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-05-01T00:17:14+0000,gate,PAYP_USDT,21.81,21.81,21.8,0.0001,8.0,0.00010000
+2026-05-01T00:17:27+0000,phemex,PAYPUSDT,21.79,21.83,21.831,0,8.0,0.00000000
+2026-05-01T00:18:31+0000,gate,PAYP_USDT,21.8,21.8,21.794,0.0001,8.0,0.00010000
+2026-05-01T00:18:44+0000,phemex,PAYPUSDT,21.84,21.84,21.828,0,8.0,0.00000000

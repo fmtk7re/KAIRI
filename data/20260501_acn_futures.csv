@@ -1,0 +1,5 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-05-01T00:17:14+0000,gate,ACN_USDT,177.53,177.82,178.588,0,8.0,0.00000000
+2026-05-01T00:17:26+0000,phemex,ACNUSDT,177.8,177.8,179.52,-0.0002,4.0,-0.00040000
+2026-05-01T00:18:31+0000,gate,ACN_USDT,177.59,177.59,178.438,0,8.0,0.00000000
+2026-05-01T00:18:42+0000,phemex,ACNUSDT,177.41,177.8,179.52,-0.0002,4.0,-0.00040000
