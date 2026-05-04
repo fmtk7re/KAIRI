@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-05-04T00:28:25+0000,gate,IOTX_USDT,0.00448,0.00448,0.00449,-0.002121,8.0,-0.00212100
+2026-05-04T00:28:28+0000,phemex,IOTXUSDT,0.00447,0.00447,0.0044774,0.0001,8.0,0.00010000
