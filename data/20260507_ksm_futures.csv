@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-05-07T00:01:19+0000,gate,KSM_USDT,5.089,5.089,5.0904,0.0001,8.0,0.00010000
 2026-05-07T00:01:22+0000,phemex,KSMUSDT,5.087,5.087,5.09064,0.0001,8.0,0.00010000
+2026-05-07T00:34:27+0000,gate,KSM_USDT,5.061,5.055,5.059,-0.000741,8.0,-0.00074100
+2026-05-07T00:34:30+0000,phemex,KSMUSDT,5.043,5.043,5.04936,0.0001,8.0,0.00010000
