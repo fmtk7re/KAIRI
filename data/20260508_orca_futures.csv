@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-05-08T00:37:30+0000,gate,ORCA_USDT,1.6005,1.6011,1.6244,-0.009783,4.0,-0.01956600
+2026-05-08T00:37:37+0000,phemex,ORCAUSDT,1.597,1.599,1.62387259,-0.00842836,4.0,-0.01685672
