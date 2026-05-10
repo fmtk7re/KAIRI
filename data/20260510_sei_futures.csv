@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-05-10T00:31:30+0000,gate,SEI_USDT,0.06972,0.06973,0.06982,-0.000106,8.0,-0.00010600
+2026-05-10T00:31:35+0000,phemex,SEIUSDT,0.0698,0.06974,0.06974099,0.0001,8.0,0.00010000
