@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-05-12T01:05:29+0000,gate,JUP_USDT,0.251,0.2518,0.25196,-0.000224,4.0,-0.00044800
+2026-05-12T01:05:34+0000,phemex,JUPUSDT,0.251,0.251,0.25151011,-0.00008729,4.0,-0.00017458
