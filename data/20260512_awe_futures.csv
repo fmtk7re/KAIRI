@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-05-12T00:14:21+0000,gate,AWE_USDT,0.05755,0.05767,0.057865,-0.000737,8.0,-0.00073700
+2026-05-12T00:14:29+0000,phemex,AWEUSDT,0.05764,0.05767,0.05773327,0.00005,4.0,0.00010000
