@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-05-13T00:08:21+0000,gate,AMD_USDT,446.09,446.17,446.401,0,8.0,0.00000000
 2026-05-13T00:08:32+0000,phemex,AMDUSDT,447.79,446.79,446.021,0,8.0,0.00000000
+2026-05-13T00:18:19+0000,gate,AMD_USDT,445.44,445.44,445.711,0,8.0,0.00000000
+2026-05-13T00:18:30+0000,phemex,AMDUSDT,446.64,446.39,445.527,0,8.0,0.00000000
