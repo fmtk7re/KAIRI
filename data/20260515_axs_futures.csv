@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-05-15T00:03:26+0000,gate,AXS_USDT,1.263,1.2634,1.2642,0.0001,8.0,0.00010000
+2026-05-15T00:03:27+0000,phemex,AXSUSDT,1.264,1.264,1.26406694,0.00005,4.0,0.00010000

@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-05-15T00:03:26+0000,gate,EUL_USDT,1.423,1.423,1.4253,0.00005,4.0,0.00010000
+2026-05-15T00:03:38+0000,phemex,EULUSDT,1.42,1.421,1.42372308,0.00005,4.0,0.00010000
