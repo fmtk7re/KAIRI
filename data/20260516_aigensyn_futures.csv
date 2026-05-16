@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-05-16T00:03:21+0000,gate,AIGENSYN_USDT,0.03713,0.03711,0.037102,0.00005,4.0,0.00010000
+2026-05-16T00:03:33+0000,phemex,AIGENSYNUSDT,0.03676,0.03698,0.0370739,0.00005,4.0,0.00010000

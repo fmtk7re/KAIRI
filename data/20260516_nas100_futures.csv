@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-05-16T00:03:21+0000,gate,NAS100_USDT,28923.42,28927.6,29103.49,-0.0002,8.0,-0.00020000
+2026-05-16T00:03:32+0000,phemex,NAS100USDT,28919.86,28922,28923.42,0,4.0,0.00000000
