@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-05-17T00:09:02+0000,gate,RIVER_USDT,7.508,7.501,7.4913,0.000642,4.0,0.00128400
+2026-05-17T00:09:10+0000,phemex,RIVERUSDT,7.505,7.502,7.492805,0.00027591,4.0,0.00055182

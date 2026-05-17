@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-05-17T00:09:02+0000,gate,HYPE_USDT,41.722,41.722,41.759,-0.0003,4.0,-0.00060000
+2026-05-17T00:09:06+0000,phemex,HYPEUSDT,41.722,41.722,41.7496,-0.00002098,8.0,-0.00002098

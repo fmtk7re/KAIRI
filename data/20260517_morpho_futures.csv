@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-05-17T00:09:02+0000,gate,MORPHO_USDT,1.7768,1.7776,1.78004,0.00005,4.0,0.00010000
+2026-05-17T00:09:06+0000,phemex,MORPHOUSDT,1.777,1.7776,1.78130862,0.0001,8.0,0.00010000
