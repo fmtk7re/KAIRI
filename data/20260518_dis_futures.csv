@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-05-18T09:33:20+0000,gate,DIS_USDT,102.81,102.81,102.45,0,8.0,0.00000000
 2026-05-18T09:33:34+0000,phemex,DISUSDT,103.6,103.31,103.158,0,8.0,0.00000000
+2026-05-18T09:42:28+0000,gate,DIS_USDT,103.12,102.97,102.517,0,8.0,0.00000000
+2026-05-18T09:42:39+0000,phemex,DISUSDT,103.31,103.38,103.38,0,8.0,0.00000000
