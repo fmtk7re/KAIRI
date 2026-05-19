@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-05-19T01:12:26+0000,gate,HK50_USDT,3239.97,3239.97,3272.86,-0.000174,8.0,-0.00017400
+2026-05-19T01:12:36+0000,phemex,HK50USDT,3237.27,3239.97,3239.97,0,4.0,0.00000000
