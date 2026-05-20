@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-05-20T01:10:21+0000,gate,IRYS_USDT,0.03581,0.03581,0.036081,-0.010005,4.0,-0.02001000
+2026-05-20T01:10:31+0000,phemex,IRYSUSDT,0.03581,0.03581,0.036068,-0.00575101,2.0,-0.02300404
