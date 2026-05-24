@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-05-24T00:08:18+0000,gate,V_USDT,336.7,336.7,329.463,0.0002,8.0,0.00020000
 2026-05-24T00:08:30+0000,phemex,VUSDT,335.84,335.78,335.719,0,8.0,0.00000000
+2026-05-24T00:49:20+0000,gate,V_USDT,336.3,336.2,329.466,0.0002,8.0,0.00020000
+2026-05-24T00:49:32+0000,phemex,VUSDT,336.24,335.69,335.342,0,8.0,0.00000000

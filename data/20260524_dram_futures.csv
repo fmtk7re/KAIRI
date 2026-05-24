@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-05-24T00:08:18+0000,gate,DRAM_USDT,55.08,55.07,54.957,0,8.0,0.00000000
 2026-05-24T00:08:29+0000,phemex,DRAMUSDT,55.03,54.96,54.9625,0,8.0,0.00000000
+2026-05-24T00:49:20+0000,gate,DRAM_USDT,55.16,55.12,55.001,0,8.0,0.00000000
+2026-05-24T00:49:32+0000,phemex,DRAMUSDT,55.03,54.97,54.9775,0,8.0,0.00000000
