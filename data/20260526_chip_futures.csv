@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-05-26T01:39:19+0000,gate,CHIP_USDT,0.04368,0.04362,0.043637,-0.000463,4.0,-0.00092600
+2026-05-26T01:39:30+0000,phemex,CHIPUSDT,0.04348,0.04358,0.04366356,0.00005,4.0,0.00010000

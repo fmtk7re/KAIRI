@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-05-26T01:39:19+0000,gate,ERA_USDT,0.1547,0.1553,0.15881,-0.016592,8.0,-0.01659200
+2026-05-26T01:39:26+0000,phemex,ERAUSDT,0.1558,0.1558,0.158863,-0.00734036,4.0,-0.01468072
