@@ -1,0 +1,5 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-05-27T00:48:11+0000,gate,NG_USDT,3.015,3.014,3.0139,0,8.0,0.00000000
+2026-05-27T00:48:27+0000,phemex,NGUSDT,3.022,3.015,3.015,0.0001,8.0,0.00010000
+2026-05-27T00:49:30+0000,gate,NG_USDT,3.015,3.013,3.0131,0,8.0,0.00000000
+2026-05-27T00:49:46+0000,phemex,NGUSDT,3.022,3.015,3.015,0.0001,8.0,0.00010000
