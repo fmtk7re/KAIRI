@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-05-29T00:02:13+0000,gate,USAR_USDT,28.08,28.08,28.096,0.0001,8.0,0.00010000
 2026-05-29T00:02:27+0000,phemex,USARUSDT,28.1,28.06,28.066,0,8.0,0.00000000
+2026-05-29T00:29:38+0000,gate,USAR_USDT,28.18,28.18,28.184,0.0001,8.0,0.00010000
+2026-05-29T00:29:54+0000,phemex,USARUSDT,28.23,28.2,28.208,0,8.0,0.00000000
