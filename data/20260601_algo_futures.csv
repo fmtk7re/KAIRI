@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-06-01T00:46:26+0000,gate,ALGO_USDT,0.12654,0.12663,0.1267,0.000005,8.0,0.00000500
+2026-06-01T00:46:27+0000,phemex,ALGOUSDT,0.1266,0.1266,0.12668586,0.0001,8.0,0.00010000
