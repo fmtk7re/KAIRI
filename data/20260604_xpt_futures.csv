@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-06-04T01:22:22+0000,gate,XPT_USDT,1885.56,1885.56,1883.6,0.000157,4.0,0.00031400
+2026-06-04T01:22:32+0000,phemex,XPTUSDT,1883.1,1883.1,1883.22444444,0,4.0,0.00000000
