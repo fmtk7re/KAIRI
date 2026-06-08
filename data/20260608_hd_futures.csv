@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-06-08T00:29:28+0000,gate,HD_USDT,310.7,310.7,309.951,0.0002,8.0,0.00020000
 2026-06-08T00:29:38+0000,phemex,HDUSDT,311.47,311.36,311.212,0,8.0,0.00000000
+2026-06-08T01:19:26+0000,gate,HD_USDT,310.3,310.3,309.929,0.0002,8.0,0.00020000
+2026-06-08T01:19:41+0000,phemex,HDUSDT,310.54,310.31,310.316,0,8.0,0.00000000
