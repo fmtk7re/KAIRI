@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-06-12T08:50:24+0000,gate,XLE_USDT,56.66,56.66,56.658,0.0001,8.0,0.00010000
 2026-06-12T08:50:38+0000,phemex,XLEUSDT,56.81,56.71,56.7,0,8.0,0.00000000
+2026-06-12T09:04:36+0000,gate,XLE_USDT,56.65,56.65,56.684,0.0001,8.0,0.00010000
+2026-06-12T09:04:51+0000,phemex,XLEUSDT,56.68,56.68,56.682,0,8.0,0.00000000
