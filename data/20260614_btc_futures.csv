@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-06-14T00:44:31+0000,gate,BTC_USDT,64511.7,64511.7,64544.43,-0.000015,8.0,-0.00001500
+2026-06-14T00:44:31+0000,phemex,BTCUSDT,64515,64515,64545.1279118,0.00000764,8.0,0.00000764

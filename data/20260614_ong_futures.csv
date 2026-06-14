@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-06-14T00:44:31+0000,gate,ONG_USDT,0.04806,0.04809,0.0481,0.00005,4.0,0.00010000
+2026-06-14T00:44:36+0000,phemex,ONGUSDT,0.04792,0.04796,0.048045,0.00005,4.0,0.00010000
