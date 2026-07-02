@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-07-02T00:03:25+0000,gate,PAYP_USDT,14.61,14.61,14.592,0.0001,8.0,0.00010000
 2026-07-02T00:03:38+0000,phemex,PAYPUSDT,14.57,14.57,14.582,0,8.0,0.00000000
+2026-07-02T00:12:31+0000,gate,PAYP_USDT,14.52,14.51,14.501,0.0001,8.0,0.00010000
+2026-07-02T00:12:44+0000,phemex,PAYPUSDT,14.53,14.52,14.527,0,8.0,0.00000000
