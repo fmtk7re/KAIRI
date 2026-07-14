@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-07-14T01:00:20+0000,gate,MVLL_USDT,29.94,29.94,29.794,0.0001,8.0,0.00010000
 2026-07-14T01:00:32+0000,phemex,MVLLUSDT,29.88,29.88,29.855,0,8.0,0.00000000
+2026-07-14T01:09:27+0000,gate,MVLL_USDT,30.08,30.08,29.961,0.0001,8.0,0.00010000
+2026-07-14T01:09:39+0000,phemex,MVLLUSDT,29.98,29.94,29.9375,0,8.0,0.00000000

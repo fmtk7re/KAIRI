@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-07-14T01:00:20+0000,gate,TTWO_USDT,244.3,244.3,244.34,0.0001,8.0,0.00010000
 2026-07-14T01:00:32+0000,phemex,TTWOUSDT,245.25,244.6,244.45,0,8.0,0.00000000
+2026-07-14T01:09:27+0000,gate,TTWO_USDT,244.6,244.6,244.63,0.0001,8.0,0.00010000
+2026-07-14T01:09:39+0000,phemex,TTWOUSDT,245.4,245.4,245.37,0,8.0,0.00000000
