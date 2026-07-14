@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-07-14T01:00:20+0000,gate,ADBE_USDT,230.21,230.21,230.131,0.0001,8.0,0.00010000
+2026-07-14T01:00:32+0000,phemex,ADBEUSDT,230.22,230.14,230.12941176,0,8.0,0.00000000
