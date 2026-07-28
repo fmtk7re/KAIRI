@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-07-28T00:13:33+0000,gate,BE_USDT,185.9,186,186.108,0.0001,8.0,0.00010000
 2026-07-28T00:13:47+0000,phemex,BEUSDT,186.15,186.03,185.973,0,8.0,0.00000000
+2026-07-28T01:22:37+0000,gate,BE_USDT,184.8,184.9,184.897,0.000098,8.0,0.00009800
+2026-07-28T01:22:51+0000,phemex,BEUSDT,184.8,184.61,184.611,0,8.0,0.00000000

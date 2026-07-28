@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-07-28T00:13:33+0000,gate,CRWV_USDT,70.29,70.31,70.414,0.0001,8.0,0.00010000
 2026-07-28T00:13:46+0000,phemex,CRWVUSDT,70.36,70.34,70.341,0,8.0,0.00000000
+2026-07-28T01:22:37+0000,gate,CRWV_USDT,70.04,70.04,70.109,-0.000007,8.0,-0.00000700
+2026-07-28T01:22:51+0000,phemex,CRWVUSDT,70,70.01,70.013,0,8.0,0.00000000
