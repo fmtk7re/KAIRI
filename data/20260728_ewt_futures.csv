@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-07-28T00:13:33+0000,gate,EWT_USDT,97.35,97.35,97.44,0.0001,8.0,0.00010000
+2026-07-28T00:13:47+0000,phemex,EWTUSDT,97.2,97.23,97.283,0,8.0,0.00000000
