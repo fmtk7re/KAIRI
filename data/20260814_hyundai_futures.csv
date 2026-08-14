@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-08-14T00:06:29+0000,gate,HYUNDAI_USDT,307.1,307.2,308.52,-0.000445,4.0,-0.00089000
+2026-08-14T00:06:44+0000,phemex,HYUNDAIUSDT,306.06,306.06,306.29,-0.00144846,8.0,-0.00144846
