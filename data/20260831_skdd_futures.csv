@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-08-31T00:16:36+0000,gate,SKDD_USDT,10.737,10.751,10.755,0,8.0,0.00000000
 2026-08-31T00:16:51+0000,phemex,SKDDUSDT,10.74,10.73,10.7288,0,8.0,0.00000000
+2026-08-31T00:20:36+0000,gate,SKDD_USDT,10.73,10.73,10.737,0,8.0,0.00000000
+2026-08-31T00:20:52+0000,phemex,SKDDUSDT,10.72,10.7,10.7031,0,8.0,0.00000000
