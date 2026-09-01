@@ -1,0 +1,5 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-09-01T00:01:32+0000,gate,DJT_USDT,9.75,9.735,9.7359,0,8.0,0.00000000
+2026-09-01T00:01:49+0000,phemex,DJTUSDT,9.73,9.73,9.73525,0,8.0,0.00000000
+2026-09-01T00:06:46+0000,gate,DJT_USDT,9.75,9.737,9.7376,0,8.0,0.00000000
+2026-09-01T00:07:03+0000,phemex,DJTUSDT,9.71,9.72,9.72911765,0,8.0,0.00000000

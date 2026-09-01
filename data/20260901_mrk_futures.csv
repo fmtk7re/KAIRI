@@ -1,0 +1,5 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-09-01T00:01:32+0000,gate,MRK_USDT,147.95,147.95,148.087,0,8.0,0.00000000
+2026-09-01T00:01:49+0000,phemex,MRKUSDT,147.51,147.74,147.74,0,8.0,0.00000000
+2026-09-01T00:06:46+0000,gate,MRK_USDT,147.95,147.96,148.165,0,8.0,0.00000000
+2026-09-01T00:07:03+0000,phemex,MRKUSDT,147.56,147.63,147.684,0,8.0,0.00000000
