@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-09-04T01:18:42+0000,gate,NEAR_USDT,1.9453,1.9452,1.9451,0.0001,8.0,0.00010000
+2026-09-04T01:18:44+0000,phemex,NEARUSDT,1.945,1.946,1.9467411,0.0001,8.0,0.00010000
