@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-09-04T00:44:31+0000,gate,GOOGL_USDT,343.04,342.9,342.794,0,8.0,0.00000000
+2026-09-04T00:44:44+0000,phemex,GOOGLUSDT,342.79,342.86,343.05888889,0,4.0,0.00000000
