@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-09-05T01:31:34+0000,gate,SKUU_USDT,26.327,26.304,26.304,0,8.0,0.00000000
 2026-09-05T01:31:50+0000,phemex,SKUUUSDT,26.32,26.31,26.3127,0,8.0,0.00000000
+2026-09-05T01:53:44+0000,gate,SKUU_USDT,26.31,26.321,26.321,0,8.0,0.00000000
+2026-09-05T01:54:02+0000,phemex,SKUUUSDT,26.37,26.36,26.3611,0,8.0,0.00000000

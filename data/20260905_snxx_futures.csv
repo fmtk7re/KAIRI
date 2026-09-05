@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-09-05T01:31:34+0000,gate,SNXX_USDT,17.182,17.188,17.1907,0,8.0,0.00000000
 2026-09-05T01:31:50+0000,phemex,SNXXUSDT,17.17,17.19,17.1966,0,8.0,0.00000000
+2026-09-05T01:53:44+0000,gate,SNXX_USDT,17.203,17.203,17.2044,0,8.0,0.00000000
+2026-09-05T01:54:01+0000,phemex,SNXXUSDT,17.22,17.22,17.2282,0,8.0,0.00000000
