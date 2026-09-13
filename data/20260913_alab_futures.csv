@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-09-13T00:15:36+0000,gate,ALAB_USDT,289.8,290,290.09,0,8.0,0.00000000
 2026-09-13T00:15:52+0000,phemex,ALABUSDT,289.84,289.99,289.995,0,8.0,0.00000000
+2026-09-13T00:19:35+0000,gate,ALAB_USDT,290.5,290.2,290.29,0,8.0,0.00000000
+2026-09-13T00:19:51+0000,phemex,ALABUSDT,289.98,290.23,290.2525,0,8.0,0.00000000

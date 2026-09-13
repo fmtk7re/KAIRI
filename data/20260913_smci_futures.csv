@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-09-13T00:15:36+0000,gate,SMCI_USDT,39.91,39.91,39.917,0,8.0,0.00000000
 2026-09-13T00:15:52+0000,phemex,SMCIUSDT,39.89,39.9,39.91975,0,8.0,0.00000000
+2026-09-13T00:19:35+0000,gate,SMCI_USDT,39.88,39.89,39.91,0,8.0,0.00000000
+2026-09-13T00:19:51+0000,phemex,SMCIUSDT,39.88,39.88,39.90225,0,8.0,0.00000000
