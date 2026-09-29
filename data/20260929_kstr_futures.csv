@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-09-29T00:07:33+0000,gate,KSTR_USDT,22.7,22.67,22.638,0,8.0,0.00000000
 2026-09-29T00:07:50+0000,phemex,KSTRUSDT,22.71,22.66,22.66,0,8.0,0.00000000
+2026-09-29T00:42:41+0000,gate,KSTR_USDT,22.66,22.65,22.635,0,8.0,0.00000000
+2026-09-29T00:42:57+0000,phemex,KSTRUSDT,22.66,22.66,22.66,0,8.0,0.00000000
