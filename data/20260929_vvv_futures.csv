@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-09-29T01:03:47+0000,gate,VVV_USDT,27.406,27.427,27.449,0.00005,4.0,0.00010000
+2026-09-29T01:04:00+0000,phemex,VVVUSDT,27.405,27.383,27.35041045,0.00005,4.0,0.00010000
