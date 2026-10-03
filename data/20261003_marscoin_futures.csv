@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-10-03T00:30:52+0000,gate,MARSCOIN_USDT,0.107,0.1071,0.107149,0.00005,4.0,0.00010000
+2026-10-03T00:31:04+0000,phemex,MARSCOINUSDT,0.10715,0.10715,0.1071868,0.00005,4.0,0.00010000

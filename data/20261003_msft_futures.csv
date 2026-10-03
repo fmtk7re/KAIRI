@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-10-03T00:30:52+0000,gate,MSFT_USDT,517.38,517.19,517.195,0,8.0,0.00000000
+2026-10-03T00:31:03+0000,phemex,MSFTUSDT,517.48,517.46,517.42,0,8.0,0.00000000
