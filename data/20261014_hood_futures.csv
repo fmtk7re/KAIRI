@@ -1,0 +1,3 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-10-14T00:11:36+0000,gate,HOOD_USDT,110.85,110.86,110.776,0.000123,8.0,0.00012300
+2026-10-14T00:11:52+0000,phemex,HOODUSDT,110.74,110.8,110.80444444,0,8.0,0.00000000
