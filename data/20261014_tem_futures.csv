@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-10-14T00:11:36+0000,gate,TEM_USDT,68.31,68.37,68.375,0,8.0,0.00000000
 2026-10-14T00:11:56+0000,phemex,TEMUSDT,68.43,68.44,68.44,0,8.0,0.00000000
+2026-10-14T02:09:45+0000,gate,TEM_USDT,68.31,68.58,68.588,0,8.0,0.00000000
+2026-10-14T02:10:03+0000,phemex,TEMUSDT,68.75,68.75,68.75,0,8.0,0.00000000
