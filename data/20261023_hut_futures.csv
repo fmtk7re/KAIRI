@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-10-23T00:30:49+0000,gate,HUT_USDT,63.85,63.85,63.686,0,8.0,0.00000000
 2026-10-23T00:31:04+0000,phemex,HUTUSDT,63.8,63.87,63.87058824,0,8.0,0.00000000
+2026-10-23T00:33:02+0000,gate,HUT_USDT,63.85,63.85,63.74,0,8.0,0.00000000
+2026-10-23T00:33:18+0000,phemex,HUTUSDT,63.89,63.89,63.87058824,0,8.0,0.00000000

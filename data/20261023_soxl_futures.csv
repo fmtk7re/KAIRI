@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-10-23T00:30:49+0000,gate,SOXL_USDT,81.19,81.16,81.151,0,8.0,0.00000000
 2026-10-23T00:31:03+0000,phemex,SOXLUSDT,81.55,81.5,81.493,-0.00016979,8.0,-0.00016979
+2026-10-23T00:33:02+0000,gate,SOXL_USDT,81.46,81.43,81.416,0,8.0,0.00000000
+2026-10-23T00:33:16+0000,phemex,SOXLUSDT,81.51,81.55,81.558,-0.00009219,8.0,-0.00009219

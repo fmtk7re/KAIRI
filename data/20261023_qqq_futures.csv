@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-10-23T00:30:49+0000,gate,QQQ_USDT,705.28,705.12,704.869,0,8.0,0.00000000
 2026-10-23T00:31:02+0000,phemex,QQQUSDT,705.93,705.73,705.422,0,8.0,0.00000000
+2026-10-23T00:33:02+0000,gate,QQQ_USDT,705.5,705.41,705.117,0,8.0,0.00000000
+2026-10-23T00:33:15+0000,phemex,QQQUSDT,706.06,706.04,705.721,0,8.0,0.00000000
