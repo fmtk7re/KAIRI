@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-10-24T00:49:27+0000,gate,LITE_USDT,754.08,754.1,754.1,0,8.0,0.00000000
 2026-10-24T00:49:42+0000,phemex,LITEUSDT,754.11,754.28,754.284,0,8.0,0.00000000
+2026-10-24T01:25:41+0000,gate,LITE_USDT,756.61,756.61,755.972,0,8.0,0.00000000
+2026-10-24T01:25:55+0000,phemex,LITEUSDT,756.72,756.63,756.589,0,8.0,0.00000000

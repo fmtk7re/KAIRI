@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-10-24T00:49:27+0000,gate,KORU_USDT,10.437,10.439,10.4473,0,8.0,0.00000000
 2026-10-24T00:49:44+0000,phemex,KORUUSDT,10.44,10.45,10.46,0,8.0,0.00000000
+2026-10-24T01:25:41+0000,gate,KORU_USDT,10.487,10.489,10.4891,0,8.0,0.00000000
+2026-10-24T01:25:56+0000,phemex,KORUUSDT,10.5,10.49,10.49,0,8.0,0.00000000

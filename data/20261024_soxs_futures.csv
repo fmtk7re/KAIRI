@@ -1,3 +1,5 @@
 timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
 2026-10-24T00:49:27+0000,gate,SOXS_USDT,53.02,53.01,53.0079,0,8.0,0.00000000
 2026-10-24T00:49:44+0000,phemex,SOXSUSDT,53.06,52.98,52.9815,0,8.0,0.00000000
+2026-10-24T01:25:41+0000,gate,SOXS_USDT,52.8,52.8,52.8125,0,8.0,0.00000000
+2026-10-24T01:25:56+0000,phemex,SOXSUSDT,52.83,52.8,52.8069,0,8.0,0.00000000
