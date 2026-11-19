@@ -1,0 +1,5 @@
+timestamp,exchange,symbol,last_price,mark_price,index_price,funding_rate,funding_interval_h,funding_rate_8h
+2026-11-19T00:00:13+0000,gate,RKLB_USDT,53.66,53.65,53.617,0,8.0,0.00000000
+2026-11-19T00:00:21+0000,phemex,RKLBUSDT,53.71,53.7,53.6995,0,8.0,0.00000000
+2026-11-19T00:01:23+0000,gate,RKLB_USDT,53.76,53.71,53.674,0,8.0,0.00000000
+2026-11-19T00:01:31+0000,phemex,RKLBUSDT,53.73,53.73,53.736,0,8.0,0.00000000
